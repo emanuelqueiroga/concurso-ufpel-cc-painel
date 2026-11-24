@@ -1,9 +1,7 @@
-# Painel de estudo – Ciência da Computação (UFPel, Edital 28/2026)
+# Painel de estudo – Concurso UFPel, Edital 28/2026, Ciência da Computação
 
-Página estática com os 10 pontos do programa, os tópicos balizadores previstos, o cronograma até a prova e os links dos materiais abertos.
+Painel publicado em https://emanuelqueiroga.github.io/concurso-ufpel-cc-painel/, com os 100 balizadores previstos, o cronograma, o progresso de estudo e os links para as páginas de cada ponto, os resumos-modelo e os materiais abertos (repositório `concurso-ufpel-cc-estudo`).
 
-Publicada pelo GitHub Pages em https://emanuelqueiroga.github.io/concurso-ufpel-cc-painel/
+Para ter a sua própria versão, siga a seção "Como criar sua própria versão" do README do repositório `concurso-ufpel-cc-estudo`. Em resumo: crie cópias dos dois repositórios com **Use this template**, mantendo os nomes, e ative o GitHub Pages na cópia do painel (Settings → Pages → Deploy from a branch → `main` / `/ (root)`). Os links do painel passam a apontar para os repositórios de quem publicou a cópia.
 
-O progresso (itens marcados e autoavaliação) fica salvo no navegador de cada aparelho. Para levar o progresso a outro aparelho, use o botão “Copiar link com meu progresso” e abra o link lá.
-
-Os itens são uma previsão, não um documento oficial da banca.
+O progresso fica salvo no navegador (localStorage) de cada aparelho e pode ser levado a outro aparelho pelo link de progresso.

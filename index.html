@@ -66,7 +66,7 @@ body.so-pendentes li.item.feito { display:none; }
 <main>
 <h1>Plano de estudo – Ciência da Computação (UFPel, Edital 28/2026)</h1>
 <p class="lead">Você marcou <b id="g-est">0</b> dos <b id="g-tot">0</b> itens do programa, e faltam <b id="dias">—</b> dias para a prova escrita (7/12, às 8h).</p>
-<p class="note">Materiais e páginas de cada ponto no repositório privado (abre com seu login no GitHub): <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo" target="_blank" rel="noopener">índice dos 10 pontos</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/materiais.md" target="_blank" rel="noopener">materiais abertos</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/referencias.md" target="_blank" rel="noopener">referências ABNT</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo#resumos-modelo" target="_blank" rel="noopener">resumos-modelo para a prova escrita</a>.</p>
+<p class="note">Materiais e páginas de cada ponto no repositório privado (abre com seu login no GitHub): <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo" target="_blank" rel="noopener">índice dos 10 pontos</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/materiais.md" target="_blank" rel="noopener">materiais abertos</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/referencias.md" target="_blank" rel="noopener">referências ABNT</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo#resumos-modelo" target="_blank" rel="noopener">resumos-modelo para a prova escrita</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/docs/balizadores-previstos.md" target="_blank" rel="noopener">balizadores previstos</a> · <a href="https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/docs/mapa-de-conteudos.md" target="_blank" rel="noopener">mapa de conteúdos</a>.</p>
 
 <div class="tiles">
 <div class="card"><div class="tile-label">Itens estudados</div><div class="big"><span id="g-pct">0</span>%</div><div class="sub"><span id="g-est2">0</span> de <span id="g-tot2">0</span> balizadores previstos</div></div>
@@ -236,6 +236,13 @@ body.so-pendentes li.item.feito { display:none; }
   }
 
   construirPontos();
+  // Numa cópia publicada em <usuário>.github.io, os links passam a apontar para os repositórios desse usuário.
+  const dono = /\.github\.io$/i.test(location.hostname) ? location.hostname.split('.')[0] : 'emanuelqueiroga';
+  if (dono.toLowerCase() !== 'emanuelqueiroga') {
+    document.querySelectorAll('a[href^="https://github.com/emanuelqueiroga/"]').forEach((a) => {
+      a.href = a.href.replace('https://github.com/emanuelqueiroga/', 'https://github.com/' + dono + '/');
+    });
+  }
   // Importar progresso vindo de um link (#progresso=...)
   const h = decodeURIComponent(location.hash || '');
   const mm = h.match(/progresso=([0-9a-f]+-[0-5]{10})/i);
