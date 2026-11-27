@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Jogo de estudo – Ciência da Computação (UFPel, Edital 28/2026)</title>
+<style>
+:root { --bg:#faf9f6; --panel:#ffffff; --fg:#1f1e1c; --muted:#6b6862; --line:#e4e1da; --accent:#c96442; --accent-fg:#ffffff; --ok:#2f7d4f; --okbg:#e7f3ea; --bad:#b3261e; --badbg:#fbeaea; --bar:#ece9e2; --gold:#a5741a; }
+@media (prefers-color-scheme: dark) { :root { --bg:#1c1b19; --panel:#262522; --fg:#eceae4; --muted:#a19d94; --line:#3a3833; --accent:#e08a6b; --accent-fg:#1c1b19; --ok:#7cc495; --okbg:#24372b; --bad:#f2b8b5; --badbg:#3d2524; --bar:#3a3833; --gold:#e0b45a; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 16px 16px 72px; }
+h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 1.8rem; line-height:1.2; margin: 8px 0 8px; }
+h2 { font-size: 1.15rem; margin: 0 0 6px; }
+h3 { font-size: 1rem; margin: 0 0 4px; }
+a { color: var(--accent); }
+.topo { font-size:.875rem; }
+.lead { margin: 0 0 8px; }
+.note, .sub, .tile-label, .meta { color: var(--muted); font-size: .875rem; }
+.note { margin: 0 0 12px; }
+.tiles { display:grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap:12px; margin: 16px 0; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+.big { font-family: Georgia, serif; font-size: 2rem; line-height:1.15; font-variant-numeric: tabular-nums; margin: 4px 0; }
+.mid { font-weight:600; margin: 4px 0; }
+.bar { height:8px; border-radius:4px; background:var(--bar); overflow:hidden; margin-top:6px; }
+.bar i { display:block; height:100%; background:var(--accent); transition: width .4s; }
+button { font: inherit; font-size:.9rem; padding:7px 12px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--fg); cursor:pointer; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity:.5; cursor:not-allowed; }
+button.pri { background:var(--accent); color:var(--accent-fg); border-color:var(--accent); font-weight:600; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin: 0 0 12px; }
+.missao { margin-top: 16px; }
+.missao ul { list-style:none; padding:0; margin: 8px 0 0; }
+.missao li { display:flex; gap:10px; align-items:baseline; padding: 4px 0; }
+.missao li .ck { flex:none; width:1.2em; text-align:center; color:var(--muted); }
+.missao li.feita .ck { color: var(--ok); }
+.missao li.feita span.t { color: var(--muted); text-decoration: line-through; }
+.abas { display:flex; flex-wrap:wrap; gap:6px; margin: 20px 0 12px; border-bottom:1px solid var(--line); }
+.abas button { border:none; border-bottom: 3px solid transparent; border-radius:0; background:none; padding: 8px 10px; color: var(--muted); font-weight:600; }
+.abas button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.grade { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap:12px; }
+.pt { display:flex; flex-direction:column; gap:6px; }
+.pt .cab { display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+.pt .num { font-size:.8rem; color:var(--muted); font-weight:600; white-space:nowrap; }
+.pt .tit { font-weight:600; line-height:1.3; }
+.pt .stats { font-size:.85rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:2px 12px; font-variant-numeric: tabular-nums; }
+.pt .acoes { display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; padding-top:6px; }
+.pt.trancado { opacity:.75; }
+.selo { display:inline-block; font-size:.75rem; font-weight:600; padding:1px 8px; border-radius:999px; background:var(--okbg); color:var(--ok); }
+.selo.tr { background:var(--bar); color:var(--muted); }
+#atividade { margin: 0 0 16px; border-color: var(--accent); }
+#atividade .fechar { float:right; }
+.pergunta { font-size:1.05rem; font-weight:600; margin: 8px 0 12px; white-space: pre-wrap; }
+.opcoes { display:flex; flex-direction:column; gap:8px; }
+.opcoes button { text-align:left; padding:10px 12px; font-size:.95rem; }
+.opcoes button.certa { border-color: var(--ok); background: var(--okbg); }
+.opcoes button.errada { border-color: var(--bad); background: var(--badbg); }
+.explic { margin-top: 12px; padding: 10px 12px; border-radius:8px; background: var(--bar); font-size:.92rem; }
+.progresso-q { font-size:.85rem; color:var(--muted); }
+.flash { min-height: 140px; display:flex; flex-direction:column; justify-content:center; gap:10px; padding: 18px; border:1px dashed var(--line); border-radius:10px; margin: 8px 0 12px; }
+.flash .frente { font-size:1.1rem; font-weight:600; }
+.flash .verso { font-size:1rem; }
+.enun { white-space: pre-wrap; margin: 8px 0; }
+.enun code, .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.9rem; }
+pre.mono { white-space: pre-wrap; background: var(--bar); padding:10px; border-radius:8px; margin: 8px 0; overflow-x:auto; }
+input[type=text], input[type=number], textarea { font: inherit; padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--fg); }
+input.resp { width: 100%; max-width: 360px; }
+textarea { width:100%; min-height: 220px; font: .85rem/1.45 ui-monospace, Menlo, Consolas, monospace; }
+.solucao { margin-top:12px; padding:10px 12px; border-radius:8px; background: var(--bar); font-size:.9rem; white-space: pre-wrap; }
+.ok { color: var(--ok); font-weight:600; } .err { color: var(--bad); font-weight:600; }
+.relogio { font-family: Georgia, serif; font-size: 3rem; font-variant-numeric: tabular-nums; margin: 8px 0; }
+.checks label { display:flex; gap:8px; align-items:flex-start; padding: 4px 0; cursor:pointer; }
+.checks input { margin-top:.3em; flex:none; width:18px; height:18px; }
+.cols2 { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 680px) { .cols2 { grid-template-columns: 1fr; } .relogio { font-size: 2.4rem; } h1 { font-size: 1.45rem; } .tiles { grid-template-columns: 1fr 1fr; gap: 8px; } .tiles .card { padding: 10px 12px; } .big { font-size: 1.6rem; } .tiles .mid { font-size: .95rem; } }
+.conqs { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:10px; }
+.conq { display:flex; gap:10px; align-items:flex-start; }
+.conq .ic { flex:none; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-weight:700; background: var(--bar); color: var(--muted); }
+.conq.tem .ic { background: var(--gold); color: var(--panel); }
+.conq:not(.tem) .nm { color: var(--muted); }
+.conq .nm { font-weight:600; }
+.conq .ds { font-size:.85rem; color: var(--muted); }
+table { width:100%; border-collapse:collapse; font-variant-numeric: tabular-nums; font-size:.9rem; }
+th, td { text-align:left; vertical-align:top; padding:6px 8px; border-bottom:1px solid var(--line); }
+th { font-size:.8rem; color:var(--muted); font-weight:600; }
+.tbl-wrap { overflow-x:auto; }
+#toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); display:flex; flex-direction:column; gap:6px; align-items:center; z-index: 10; pointer-events:none; }
+#toast div { background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 999px; font-size:.9rem; font-weight:600; box-shadow: 0 4px 16px rgba(0,0,0,.2); animation: sobe .25s ease-out; }
+@keyframes sobe { from { transform: translateY(10px); opacity:0; } to { transform:none; opacity:1; } }
+@media (prefers-reduced-motion: reduce) { #toast div { animation:none; } .bar i { transition:none; } }
+.licoes { list-style:none; padding:0; margin: 4px 0 0; display:flex; flex-direction:column; gap:4px; }
+.licoes button { width:100%; text-align:left; display:flex; gap:8px; align-items:baseline; padding:6px 10px; }
+.licoes .ck { flex:none; width:1.1em; color: var(--muted); }
+.licoes .feita .ck { color: var(--ok); }
+.licoes .nv { margin-left:auto; font-size:.75rem; color: var(--muted); white-space:nowrap; }
+.nivel { display:inline-block; font-size:.75rem; font-weight:600; padding:1px 8px; border-radius:999px; background: var(--bar); color: var(--muted); margin-left:6px; vertical-align: middle; }
+.licao p { margin: 0 0 12px; max-width: 70ch; }
+.passos { border:1px solid var(--line); border-radius:10px; padding: 12px 14px; margin: 16px 0; }
+.passos ol { margin: 8px 0 0; padding-left: 1.4em; }
+.passos li { margin: 0 0 6px; }
+.check { margin: 16px 0 0; }
+.check .opcoes button { padding: 8px 12px; }
+.leva { border-left: 3px solid var(--accent); padding: 6px 12px; margin: 16px 0; background: var(--bar); border-radius: 0 8px 8px 0; }
+[hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+<nav class="topo"><a href="./">← Voltar ao painel</a></nav>
+<h1>Jogo de estudo – Ciência da Computação</h1>
+<p class="lead">A fase 0 ensina o básico de cada ponto em lições curtas. A fase 1 fixa o conteúdo com quiz, flashcards e cálculos. A fase 2 treina a escrita da prova. Terminar a trilha libera o quiz; acertar 80% do quiz libera a escrita.</p>
+
+<div class="card missao" id="missao">
+<h2>Missão de hoje</h2>
+<div class="note" id="missao-sub" style="margin:0">—</div>
+<ul id="missao-lista"></ul>
+</div>
+
+<div class="tiles">
+<div class="card"><div class="tile-label">Nível <span id="nv-num">1</span></div><div class="mid" id="nv-nome">—</div><div class="bar" aria-hidden="true"><i id="nv-bar" style="width:0%"></i></div><div class="sub" id="nv-falta">—</div></div>
+<div class="card"><div class="tile-label">Pontos de experiência</div><div class="big" id="xp">0</div><div class="sub" id="xp-hoje">0 hoje</div></div>
+<div class="card"><div class="tile-label">Sequência</div><div class="big" id="seq">0</div><div class="sub" id="seq-sub">dias seguidos estudando</div></div>
+<div class="card"><div class="tile-label">Fases</div><div class="mid"><span id="f0-num">0</span> trilhas · <span id="f1-num">0</span> pontos na fase 2</div><div class="sub"><span id="f2-num">0</span> redações · <span id="dias-prova">—</span></div></div>
+</div>
+
+<div class="abas" role="tablist" aria-label="Seções do jogo">
+<button role="tab" id="t-f0" aria-controls="aba-f0" aria-selected="true">Fase 0 · Aprender</button>
+<button role="tab" id="t-f1" aria-controls="aba-f1" aria-selected="false">Fase 1 · Fixar</button>
+<button role="tab" id="t-f2" aria-controls="aba-f2" aria-selected="false">Fase 2 · Escrever</button>
+<button role="tab" id="t-conq" aria-controls="aba-conq" aria-selected="false">Conquistas</button>
+<button role="tab" id="t-sync" aria-controls="aba-sync" aria-selected="false">Sincronizar</button>
+</div>
+
+<section id="atividade" class="card" hidden aria-live="polite"></section>
+
+<section id="aba-f0" role="tabpanel" aria-labelledby="t-f0">
+<p class="note">Cada ponto começa do zero e avança em lições curtas, do básico ao nível da prova, sem exigir programação. Cada lição tem uma explicação, um exemplo que você avança passo a passo e perguntas rápidas de checagem. Terminar a trilha de um ponto libera o quiz dele na fase 1. O mesmo conteúdo existe como apostila em texto no GitHub.</p>
+<div class="grade" id="grade-f0"></div>
+</section>
+
+<section id="aba-f1" role="tabpanel" aria-labelledby="t-f1" hidden>
+<div class="toolbar">
+<button type="button" id="btn-vencidos" class="pri">Flashcards pendentes</button>
+<button type="button" id="btn-calc-aleat">Cálculo aleatório</button>
+</div>
+<p class="note">Depois da trilha, leia o resumo-modelo do ponto, faça o quiz (12 questões; 80% libera a fase 2), revise os flashcards até ficarem na caixa 4 ou 5 e treine os cálculos que costumam aparecer como exemplo resolvido.</p>
+<div class="grade" id="grade-f1"></div>
+</section>
+
+<section id="aba-f2" role="tabpanel" aria-labelledby="t-f2" hidden>
+<div class="toolbar">
+<button type="button" id="btn-sortear" class="pri">Sortear ponto, como na prova</button>
+<span class="note" style="margin:0" id="sorteio-msg"></span>
+</div>
+<p class="note">O esqueleto de memória treina o roteiro: 10 minutos, sem consulta, para escrever os itens da resposta. A redação é à mão, com cronômetro: o sprint tem 60 minutos; a completa tem 30 minutos de consulta e 4 horas de escrita, como no edital. No fim, você marca o que cobriu e o painel gera o texto para colar numa conversa com o Claude, junto com as fotos das páginas.</p>
+<div class="grade" id="grade-f2"></div>
+<h2 style="margin-top:24px">Redações feitas</h2>
+<div class="tbl-wrap"><table><thead><tr><th>Data</th><th>Ponto</th><th>Modo</th><th>Tempo</th><th>Balizadores</th><th>Nota do Claude</th></tr></thead><tbody id="tab-red"><tr><td colspan="6" class="note">Nenhuma ainda.</td></tr></tbody></table></div>
+</section>
+
+<section id="aba-conq" role="tabpanel" aria-labelledby="t-conq" hidden>
+<p class="note">Cada conquista vale 30 pontos de experiência.</p>
+<div class="conqs" id="lista-conq"></div>
+<h2 style="margin-top:24px">Números</h2>
+<div class="tbl-wrap"><table><tbody id="tab-num"></tbody></table></div>
+</section>
+
+<section id="aba-sync" role="tabpanel" aria-labelledby="t-sync" hidden>
+<div class="card">
+<p style="margin-top:0">O jogo fica salvo neste navegador. Para continuar em outro aparelho, copie o link e abra-o lá. Importar substitui o progresso do jogo no aparelho que recebe o link. O progresso do painel tem um link próprio, na página do painel.</p>
+<div class="toolbar">
+<button type="button" id="btn-link" class="pri">Copiar link com meu progresso do jogo</button>
+<button type="button" id="btn-importar">Importar código colado</button>
+</div>
+<input type="text" id="sync-campo" style="width:100%" aria-label="Link ou código de progresso do jogo" placeholder="O link aparece aqui; para importar, cole aqui e clique em Importar">
+<p class="note" id="sync-msg" style="margin-top:8px"></p>
+<hr style="border:none;border-top:1px solid var(--line);margin:16px 0">
+<button type="button" id="btn-zerar">Recomeçar o jogo neste aparelho</button>
+</div>
+</section>
+</main>
+<div id="toast"></div>
+
+<script type="application/json" id="dados">{"pontos":[{"p":8,"titulo":"Técnicas de análise de algoritmos","crono":"24–25/11","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-08.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-08.md","apostila":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/apostila/ponto-08.md","baliz":["Por que analisar","Dimensões da análise","Notação assintótica","Algoritmos iterativos","Corretude","Algoritmos recursivos","Resolução de recorrências","Análise amortizada","Análise probabilística","Limites inferiores e análise empírica"]},{"p":1,"titulo":"Divisão e conquista, programação dinâmica e gulosos","crono":"26/11","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-01.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-01.md","apostila":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/apostila/ponto-01.md","baliz":["Paradigmas de projeto de algoritmos","Divisão e conquista","Exemplos de divisão e conquista","Análise por recorrências","Programação dinâmica","Exemplos de programação dinâmica","Algoritmos gulosos","Exemplos gulosos","Comparação entre os paradigmas","Aplicações"]},{"p":4,"titulo":"Algoritmos de ordenação","crono":"27/11","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-04.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-04.md","apostila":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/apostila/ponto-04.md","baliz":["O problema da ordenação","Métodos elementares","Merge sort","Quicksort","Heapsort","Shellsort","Limite inferior","Ordenação em tempo linear","Quadro comparativo","Na prática"]},{"p":5,"titulo":"Sistemas criptográficos","crono":"28–29/11","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-05.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-05.md","apostila":"","baliz":["Conceitos","Teoria dos números","Resultados centrais","Chave privada (simétrica)","Chave pública","RSA","Segurança e fatoração","Teste de primalidade","Assinatura digital e hash","Tendências"]},{"p":9,"titulo":"Classes de complexidade","crono":"28–29/11","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-09.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-09.md","apostila":"","baliz":["Algoritmo × problema","Ordens de crescimento","Tratabilidade","Classe P","Classe NP","Reduções e NP-completude","Prova de NP-completude","Problemas NP-completos clássicos","P × NP e além","Lidando com a intratabilidade"]},{"p":3,"titulo":"Árvores e grafos","crono":"1/12","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-03.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-03.md","apostila":"","baliz":["Terminologia de árvores","Árvores binárias","Percursos","Árvores especiais","Terminologia de grafos","Representações de grafos","Buscas","Aplicações das buscas","Algoritmos clássicos","Aplicações"]},{"p":7,"titulo":"Gerenciamento de memória","crono":"2/12","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-07.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-07.md","apostila":"","baliz":["Hierarquia de memória e localidade","Endereçamento e alocação contígua (SO)","Paginação e segmentação (SO)","Memória virtual (SO)","Alocação de quadros e thrashing (SO)","Memória de um programa (linguagens)","Alocação estática, automática e dinâmica","Alocadores de heap","Gerência automática","Integração e estudos de caso"]},{"p":6,"titulo":"Dicionários: árvores, tries e hash","crono":"3/12","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-06.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-06.md","apostila":"","baliz":["TAD dicionário","Implementações elementares","Árvores binárias de busca","Árvores balanceadas","Memória secundária","Tries","Tabelas hash","Colisões","Comparação","Aplicações"]},{"p":2,"titulo":"Listas, filas, pilhas e deques","crono":"3/12","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-02.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-02.md","apostila":"","baliz":["Tipo abstrato de dados","Representações","Listas","Pilhas (LIFO)","Aplicações de pilhas","Filas (FIFO)","Aplicações de filas","Deques (filas duplas)","Complexidade e comparação","Fila de prioridade (extensão)"]},{"p":10,"titulo":"Programação orientada a objetos","crono":"4/12","resumo":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/resumos/ponto-10.md","pagina":"https://github.com/emanuelqueiroga/concurso-ufpel-cc-estudo/blob/main/pontos/ponto-10.md","apostila":"","baliz":["Paradigma OO","Classes e objetos","Abstração e encapsulamento","Composição","Sobrecarga","Herança e especialização","Polimorfismo","Ligação dinâmica","Classes abstratas e interfaces","Exemplo integrado e aplicações"]}],"quiz":{"8":[["Qual é a definição de f(n) ∈ Θ(g(n))?","Existem c1, c2 > 0 e n0 tais que c1·g(n) ≤ f(n) ≤ c2·g(n) para todo n ≥ n0","Existe c > 0 tal que f(n) ≤ c·g(n) para algum valor de n","f(n) = g(n) para todo n suficientemente grande","Para toda constante c > 0, f(n) < c·g(n) a partir de algum n0","Θ é o limite justo: f fica entre dois múltiplos de g a partir de n0. A última alternativa define o-pequeno."],["Qual é a solução de T(n) = 2T(n/2) + Θ(n)?","Θ(n lg n)","Θ(n)","Θ(n²)","Θ(lg n)","a = 2, b = 2, n^{log_b a} = n = f(n): caso 2 do teorema mestre. É a recorrência do Merge sort."],["Qual é a solução de T(n) = 7T(n/2) + Θ(n²) (Strassen)?","Θ(n^{lg 7}) ≈ Θ(n^{2,81})","Θ(n² lg n)","Θ(n²)","Θ(n³)","n^{log_2 7} ≈ n^{2,81} cresce polinomialmente mais que n²: caso 1, domina o custo das folhas."],["Qual é a solução de T(n) = 2T(n/2) + n²?","Θ(n²)","Θ(n² lg n)","Θ(n lg n)","Θ(n³)","f(n) = n² é polinomialmente maior que n^{log_2 2} = n e vale a regularidade 2(n/2)² = n²/2 ≤ c·n² com c = 1/2: caso 3."],["Qual destas recorrências a forma básica do teorema mestre NÃO resolve?","T(n) = 2T(n/2) + n lg n","T(n) = 4T(n/2) + n","T(n) = T(n/2) + 1","T(n) = 3T(n/3) + n","n lg n é maior que n, mas não por um fator n^ε: cai entre os casos 2 e 3. A solução é Θ(n lg² n), obtida pela árvore de recursão."],["Quais são as três partes de uma prova por invariante de laço?","Inicialização, manutenção e término","Base, passo e hipótese de indução","Pré-condição, variante e pós-condição","Definição, análise e implementação","O invariante vale antes da primeira iteração (inicialização), é preservado por cada iteração (manutenção) e, junto com a condição de parada, dá o resultado (término)."],["Melhor caso, pior caso e caso médio da ordenação por inserção:","Θ(n), Θ(n²) e Θ(n²)","Θ(n lg n) nos três casos","Θ(n), Θ(n²) e Θ(n lg n)","Θ(1), Θ(n) e Θ(n²)","Vetor ordenado: uma comparação por elemento. Em ordem decrescente: j comparações no passo j. Em média, metade da parte ordenada, ainda Θ(n²)."],["Num vetor dinâmico que dobra de tamanho quando enche, qual é o custo amortizado de uma inserção no fim?","O(1)","O(lg n)","O(n)","O(√n)","n inserções custam menos de n + (1 + 2 + 4 + …) < 3n: média O(1) por operação, embora uma inserção isolada possa custar Θ(n)."],["Quais são os três métodos de análise amortizada?","Agregado, contábil e do potencial","Substituição, árvore de recursão e teorema mestre","Melhor, pior e caso médio","Guloso, dinâmico e divisão e conquista","Os três métodos de Cormen et al. (cap. 17). Substituição, árvore e mestre resolvem recorrências."],["No problema da contratação com candidatos em ordem aleatória, qual é o número esperado de contratações?","H_n = ln n + O(1)","n/2","1","√n","O candidato i é o melhor até ali com probabilidade 1/i. Pela linearidade da esperança, a soma é a série harmônica."],["De onde vem o limite inferior Ω(n lg n) da ordenação por comparação?","Da árvore de decisão, que precisa de pelo menos n! folhas","Do teorema mestre aplicado ao Merge sort","Do número médio de inversões de um vetor","Da análise amortizada do Heapsort","Uma árvore binária de altura h tem no máximo 2^h folhas; 2^h ≥ n! dá h ≥ lg(n!) = Ω(n lg n)."],["Num teste de dobramento, T(2n)/T(n) se aproxima de 8. Isso sugere custo:","Θ(n³)","Θ(n²)","Θ(n lg n)","Θ(2ⁿ)","Se T(n) ≈ a·n^b, então T(2n)/T(n) ≈ 2^b. Razão 8 = 2³ indica b = 3."]],"1":[["Quais propriedades um problema precisa ter para que a programação dinâmica valha a pena?","Subestrutura ótima e subproblemas sobrepostos","Escolha gulosa e subestrutura ótima","Subproblemas independentes e combinação linear","Recorrência com caso base e entrada ordenada","Sem sobreposição, basta divisão e conquista. A escolha gulosa é o requisito dos algoritmos gulosos."],["Por que o cálculo recursivo ingênuo de Fibonacci é exponencial?","Porque os mesmos subproblemas são resolvidos muitas vezes","Porque a recorrência não tem caso base","Porque somar inteiros é uma operação cara","Porque a profundidade da recursão é n","F(n−2) é calculado dentro de F(n) e de F(n−1), e assim por diante: cerca de φⁿ chamadas. Memoização reduz a Θ(n)."],["Na seleção de atividades, qual escolha gulosa é correta?","A atividade que termina primeiro","A atividade que começa primeiro","A atividade mais curta","A atividade que conflita com menos outras","Prova por troca: substituir a primeira atividade de uma solução ótima pela que termina primeiro não cria conflito nem reduz o número de atividades."],["Mochila 0/1 com W = 5, pesos (1, 2, 3) e valores (60, 100, 120). Qual é o valor ótimo?","220","160","240","180","Itens 2 e 3 (peso 5). O guloso pela razão valor/peso leva 1 e 2 (160); 240 é o ótimo da versão fracionária."],["O algoritmo de programação dinâmica Θ(nW) para a mochila 0/1 é:","Pseudopolinomial","Polinomial no tamanho da entrada","Exponencial em n","Linear","W ocupa só lg W bits na entrada, então nW pode ser exponencial no tamanho da entrada. Por isso a mochila continua NP-difícil."],["Qual é o custo do algoritmo de Karatsuba para multiplicar inteiros de n dígitos?","Θ(n^{lg 3}) ≈ Θ(n^{1,585})","Θ(n²)","Θ(n lg n)","Θ(n^{1,5})","Três multiplicações recursivas de metade do tamanho: T(n) = 3T(n/2) + Θ(n), caso 1 do teorema mestre."],["Qual é o custo da LCS de cadeias de tamanhos m e n por programação dinâmica?","Θ(mn)","Θ(m + n)","Θ(2^m)","Θ(mn lg n)","Tabela (m + 1) × (n + 1), cada célula calculada em O(1)."],["Qual é o custo da multiplicação de cadeia de matrizes por programação dinâmica?","Θ(n³)","Θ(n²)","Θ(2ⁿ)","Θ(n lg n)","Θ(n²) subproblemas m[i, j], cada um testando O(n) pontos de corte k."],["Com moedas de 1, 3 e 4, quantas moedas o guloso usa para troco 6, e qual é o ótimo?","3 (4 + 1 + 1) e 2 (3 + 3)","2 e 2","3 e 3","4 e 2","Com moedas arbitrárias, o guloso não tem a propriedade da escolha gulosa. A programação dinâmica resolve."],["O que o algoritmo de Huffman faz a cada passo?","Junta os dois nós de menor frequência","Junta os dois nós de maior frequência","Atribui códigos de mesmo tamanho a todos os símbolos","Ordena os símbolos alfabeticamente","Fila de prioridade com as frequências; o novo nó tem a soma das duas. Custo O(n lg n)."],["Que argumento costuma provar a corretude de um algoritmo guloso?","Argumento de troca","Teorema mestre","Redução polinomial","Método do potencial","Mostra-se que uma solução ótima pode ser modificada para conter a escolha gulosa sem piorar."],["Qual destes NÃO é um algoritmo guloso?","Floyd-Warshall","Kruskal","Prim","Dijkstra","Floyd-Warshall é programação dinâmica sobre os vértices intermediários permitidos, em Θ(V³)."]],"4":[["O que significa um método de ordenação ser estável?","Preserva a ordem relativa de elementos com chaves iguais","Usa memória auxiliar constante","Fica mais rápido em vetores quase ordenados","Tem o mesmo tempo em todos os casos","As outras alternativas descrevem in-place, adaptativo e uma propriedade de custo."],["Qual destes métodos NÃO é estável na versão usual?","Heapsort","Merge sort","Ordenação por inserção","Counting sort","As trocas da raiz com o fim do heap podem inverter elementos iguais."],["Quando o Quicksort atinge o pior caso Θ(n²)?","Quando as partições ficam sempre desbalanceadas, como num vetor ordenado com o último elemento como pivô","Quando todos os elementos são distintos","Quando n é potência de 2","Quando o pivô é escolhido ao acaso","T(n) = T(n − 1) + Θ(n) = Θ(n²). A escolha aleatória do pivô dá custo esperado Θ(n lg n) para qualquer entrada."],["Qual é o custo de construir um heap a partir de um vetor qualquer?","Θ(n)","Θ(n lg n)","Θ(lg n)","Θ(n²)","A maioria dos nós está perto das folhas e desce pouco: Σ (n/2^{h+1})·O(h) = O(n)."],["Particionamento de Lomuto em [2, 8, 7, 1, 3, 5, 6, 4] com pivô 4. Como fica o vetor?","[2, 1, 3, 4, 7, 5, 6, 8]","[1, 2, 3, 4, 5, 6, 7, 8]","[2, 3, 1, 4, 7, 5, 6, 8]","[2, 1, 3, 4, 8, 5, 6, 7]","Trocas em j = 4 (1) e j = 5 (3); no fim o pivô vai para a posição 4, trocando com o 8."],["Por que o Counting sort pode custar Θ(n + k), abaixo de Ω(n lg n)?","Porque não ordena por comparações: usa as chaves como índices","Porque o limite inferior só vale no caso médio","Porque usa vários processadores","Porque k é sempre constante","O limite Ω(n lg n) vale apenas para algoritmos baseados em comparações."],["Que propriedade a ordenação usada em cada dígito do Radix sort precisa ter?","Ser estável","Ser in-place","Ser por comparação","Ser aleatorizada","A estabilidade preserva a ordem obtida nos dígitos menos significativos já processados."],["Quantas trocas a ordenação por seleção faz?","n − 1","Θ(n²)","Θ(n lg n)","Nenhuma","Uma troca por posição; as comparações é que são n(n − 1)/2. Por isso é útil quando mover registros é caro."],["Quais métodos o Introsort combina?","Quicksort, Heapsort e inserção","Merge sort, inserção e Shellsort","Quicksort, Merge sort e Counting sort","Heapsort, seleção e bolha","Começa com Quicksort, passa para Heapsort se a recursão passa de ~2 lg n e usa inserção em subvetores pequenos."],["O que é o Timsort?","Um Merge sort adaptativo que aproveita sequências já ordenadas (runs)","Um Quicksort com dois pivôs","Um Heapsort com inserção","Um Shellsort com a sequência de Knuth","Criado por Tim Peters (2002) para o Python; também usado no Java para objetos. É estável e Θ(n) em vetores ordenados."],["Quanto espaço extra o Merge sort usa em vetores?","Θ(n)","Θ(1)","Θ(lg n)","Θ(n²)","A intercalação precisa de um vetor auxiliar. Em listas encadeadas pode ser feita sem esse vetor."],["Como se ordena um arquivo que não cabe na memória?","Ordenando blocos na memória e intercalando k sequências por vez","Rodando Quicksort direto sobre o disco","Com Counting sort sobre o arquivo inteiro","Com Heapsort sem intercalação","Ordenação externa por intercalação: o custo dominante é o número de passadas sobre o disco."]],"5":[["O que diz o princípio de Kerckhoffs?","A segurança deve depender só do segredo da chave, não do algoritmo","O algoritmo de cifração deve ser secreto","A chave deve ter o tamanho da mensagem","As chaves devem ser trocadas a cada mensagem","Algoritmos públicos podem ser analisados por todos; o segredo fica concentrado na chave."],["RSA com p = 5, q = 11 e e = 3. Qual é d?","27","7","13","23","φ = 40; 40 = 13·3 + 1 dá 3⁻¹ ≡ −13 ≡ 27 (mod 40). Confere: 3·27 = 81 = 2·40 + 1."],["Quanto vale φ(n) para n = pq, com p e q primos distintos?","(p − 1)(q − 1)","pq − 1","(p + 1)(q + 1)","p + q","Retiram-se de 1..pq os múltiplos de p (q deles) e de q (p deles), contando pq uma vez: pq − p − q + 1."],["A segurança da troca de chaves Diffie-Hellman se baseia em qual problema?","Logaritmo discreto","Fatoração de inteiros","Mochila","Colisões de funções hash","Quem observa g^a e g^b mod p precisaria obter a ou b para calcular g^{ab}."],["A troca Diffie-Hellman sem autenticação é vulnerável a:","Ataque do intermediário","Busca exaustiva da chave AES","Colisões de MD5","Algoritmo de Grover","Um intermediário faz uma troca separada com cada parte. Por isso o TLS autentica o servidor com assinatura e certificado."],["O número 561 = 3·11·17 é conhecido por:","Enganar o teste de Fermat para toda base prima com ele","Enganar o teste de Miller-Rabin","Ser o menor primo de Mersenne","Quebrar o algoritmo AKS","É o menor número de Carmichael. O Miller-Rabin detecta esses compostos ao verificar raízes quadradas não triviais de 1."],["Como erra o teste de Miller-Rabin?","Só pode errar ao responder \"primo\"; a resposta \"composto\" está sempre certa","Só pode errar ao responder \"composto\"","Erra nos dois sentidos com probabilidade 1/2","Erra sempre nos números de Carmichael","É Monte Carlo com erro unilateral: no máximo 2^{−s} com s bases pela análise de Cormen et al., ou 4^{−s} pela de Rabin."],["Quais são os parâmetros do AES?","Blocos de 128 bits; chaves de 128, 192 ou 256 bits","Blocos de 64 bits; chave de 56 bits","Blocos de 256 bits; chave de 128 bits","Blocos de 128 bits; chave de 56 bits","AES (Rijndael, FIPS 197, 2001): 10, 12 ou 14 rodadas. Blocos de 64 bits e chave de 56 são do DES."],["Qual modo de operação revela padrões do texto claro?","ECB","CBC","CTR","GCM","No ECB, blocos iguais geram cifrados iguais. CBC encadeia, CTR gera fluxo, GCM acrescenta autenticação."],["Numa assinatura RSA, o emissor usa:","A própria chave privada sobre o resumo da mensagem","A chave pública do receptor","A própria chave pública","Uma chave simétrica compartilhada","S = H(M)^d mod n; qualquer um verifica com a chave pública: S^e mod n = H(M)."],["O algoritmo de Shor, num computador quântico grande, quebraria:","RSA, Diffie-Hellman e curvas elípticas","AES-256 diretamente","SHA-256","O one-time pad","Shor fatora e calcula logaritmos discretos em tempo polinomial. Grover só reduz pela metade a segurança simétrica."],["O que define o padrão NIST FIPS 203 (2024)?","ML-KEM, encapsulamento de chaves baseado em reticulados (Kyber)","ML-DSA, assinatura baseada em reticulados","SLH-DSA, assinatura baseada em hash","Uma nova versão do AES","FIPS 204 é o ML-DSA (Dilithium) e FIPS 205 o SLH-DSA (SPHINCS+)."]],"9":[["O que caracteriza a classe NP?","Problemas de decisão cujas respostas \"sim\" têm certificado verificável em tempo polinomial","Problemas que não têm algoritmo polinomial","Problemas NP-difíceis","Problemas resolvidos em tempo exponencial","Equivale a ser decidido em tempo polinomial por uma máquina não determinística. NP significa \"não determinístico polinomial\"."],["Um problema é NP-completo quando:","É NP-difícil e pertence a NP","Não pertence a P","Exige tempo exponencial","Pode ser reduzido a SAT","Todo problema de NP se reduz a SAT; isso não o torna NP-completo."],["Para provar que um problema novo B é NP-completo, além de mostrar B ∈ NP, é preciso:","Reduzir um NP-completo conhecido A a B (A ≤p B)","Reduzir B a um NP-completo conhecido (B ≤p A)","Reduzir B a um problema de P","Mostrar que B não está em P","A direção é do conhecido para o novo: se B fosse fácil, A também seria."],["O teorema de Cook-Levin afirma que:","SAT é NP-completo","P ≠ NP","3-SAT está em P","Todo problema NP-difícil pertence a NP","Cook (1971) e Levin (1973). Karp (1972) estendeu a 21 problemas por reduções."],["Qual destes problemas está em P?","2-SAT","3-SAT","Ciclo hamiltoniano","Clique (com k na entrada)","2-SAT se resolve em tempo linear pelo grafo de implicações."],["G tem um clique de tamanho k se e somente se:","O complemento de G tem cobertura de vértices de tamanho |V| − k","O complemento de G tem cobertura de tamanho k","G tem conjunto independente de tamanho |V| − k","O complemento de G tem clique de tamanho |V| − k","Um clique em G é conjunto independente no complemento, e o resto dos vértices cobre todas as arestas do complemento."],["Na redução 3-SAT ≤p Clique de uma fórmula com k cláusulas, procura-se um clique de tamanho:","k","3k","k/3","2k","Um vértice por literal (3k vértices); o clique pega um literal verdadeiro de cada cláusula."],["Se um problema NP-completo tiver algoritmo polinomial, então:","P = NP","P ≠ NP","NP = EXP","Só esse problema sai de NP","Todo problema de NP se reduziria a ele em tempo polinomial."],["Quais relações entre classes são conhecidas?","P ⊆ NP ⊆ PSPACE ⊆ EXP, e P ≠ EXP","P = NP","NP ≠ PSPACE","EXP ⊆ NP","P ≠ EXP pelo teorema da hierarquia de tempo; logo alguma inclusão intermediária é própria, mas não se sabe qual."],["Que fator de aproximação dá o algoritmo que escolhe as duas pontas de cada aresta de um emparelhamento maximal, na cobertura de vértices?","2","1,5","lg n","Nenhum fator constante","Qualquer cobertura tem pelo menos um extremo de cada aresta escolhida; o algoritmo usa os dois."],["Por que o algoritmo Θ(nW) da mochila não prova que P = NP?","Porque é pseudopolinomial: W pode ser exponencial no número de bits da entrada","Porque a mochila não está em NP","Porque o algoritmo é aleatorizado","Porque Θ(nW) é exponencial em n","A entrada guarda W em lg W bits. A mochila é \"fracamente\" NP-completa."],["Qual destes é candidato a problema NP-intermediário (teorema de Ladner)?","Fatoração de inteiros","SAT","Teste de primalidade","Ordenação","SAT é NP-completo; primalidade e ordenação estão em P. Fatoração está em NP ∩ co-NP."],["A 10⁹ operações por segundo, quanto tempo levam 2⁵⁰ operações?","Cerca de 13 dias","Cerca de 13 segundos","Cerca de 13 anos","Cerca de 13 minutos","2⁵⁰ ≈ 1,13 × 10¹⁵ operações = 1,13 × 10⁶ s ≈ 13 dias. Para n = 100, seriam 4 × 10¹³ anos."]],"3":[["Quantas arestas tem uma árvore com n vértices?","n − 1","n","n + 1","2n − 1","Uma árvore é conexa e acíclica: acrescentar uma aresta cria ciclo; retirar uma desconecta."],["Qual é o número máximo de nós de uma árvore binária de altura h?","2^{h+1} − 1","2^h","2h + 1","h²","1 + 2 + 4 + … + 2^h. Logo uma árvore com n nós tem altura de pelo menos ⌊lg n⌋."],["Árvore: raiz A; filhos B e C; B com filhos D e E; C só com filho direito F. Qual é a ordem simétrica (em ordem)?","D, B, E, A, C, F","A, B, D, E, C, F","D, E, B, F, C, A","A, B, C, D, E, F","Esquerda, raiz, direita. As outras são pré-ordem, pós-ordem e percurso em nível."],["Que estrutura auxiliar o percurso em nível usa?","Fila","Pilha","Heap","Tabela hash","Visita por profundidade crescente, da esquerda para a direita, como a busca em largura."],["Para um grafo esparso, qual representação é mais econômica, e quanto espaço ocupa?","Listas de adjacência, Θ(V + E)","Matriz de adjacência, Θ(V²)","Listas de adjacência, Θ(V²)","Matriz de adjacência, Θ(E)","A matriz é melhor em grafos densos ou quando o teste de aresta em O(1) domina."],["Um grafo orientado tem ciclo se e somente se a busca em profundidade encontra:","Uma aresta de retorno","Uma aresta cruzada","Uma aresta de avanço","Uma aresta de árvore","A aresta de retorno liga um vértice a um ancestral ainda aberto, fechando um ciclo."],["Como se obtém a ordenação topológica de um DAG pela DFS?","Listando os vértices em ordem decrescente de tempo de término","Em ordem crescente de tempo de descoberta","Pela distância da BFS","Em ordem crescente de grau","Se há aresta u → v num DAG, f[u] > f[v]."],["Qual é a condição para o algoritmo de Dijkstra estar correto?","Pesos não negativos","Grafo acíclico","Grafo não orientado","Pesos inteiros","Com peso negativo, um vértice já extraído ainda poderia melhorar. Nesse caso usa-se Bellman-Ford."],["O que caracteriza o algoritmo de Bellman-Ford?","Custo O(VE) e detecção de ciclos negativos","Custo O(E lg V) com heap","Custo Θ(V³) para todos os pares","Custo O(V + E) em DAGs com pesos unitários","Relaxa todas as arestas |V| − 1 vezes; se ainda houver melhora, há ciclo negativo alcançável."],["Que estrutura o algoritmo de Kruskal usa para evitar ciclos?","Conjuntos disjuntos (union-find)","Fila de prioridade de vértices","Pilha","Trie","Uma aresta entra se liga dois componentes diferentes. Custo dominado pela ordenação: O(E lg E)."],["Qual é a altura máxima de uma árvore rubro-negra com n nós internos?","2 lg(n + 1)","lg n","1,44 lg n","n/2","1,44 lg n é o limite da AVL, mais rígida. A rubro-negra faz menos rotações nas atualizações."],["O teorema do fluxo máximo e corte mínimo afirma que:","O valor do fluxo máximo é igual à capacidade do corte mínimo","O fluxo máximo é a soma de todas as capacidades","O fluxo máximo é o número de caminhos aumentantes","O corte mínimo é a árvore geradora mínima","É a base do método de Ford-Fulkerson; com BFS (Edmonds-Karp) o custo é O(VE²)."]],"7":[["O que é fragmentação externa?","Memória livre suficiente no total, mas dividida em lacunas não contíguas","Desperdício dentro de um bloco maior que o pedido","Excesso de faltas de página","Falha de acerto na TLB","A segunda alternativa é a fragmentação interna. A paginação elimina a externa."],["Páginas de 4 KB; endereço lógico 13.000; a página 3 está no quadro 9. Qual é o endereço físico?","37.576","36.864","13.009","41.672","13.000 = 3·4096 + 712. Físico = 9·4096 + 712 = 36.864 + 712."],["TLB com 80% de acerto e acesso à memória de 100 ns. Qual é o tempo efetivo (ignorando a TLB)?","120 ns","100 ns","180 ns","200 ns","0,8·100 + 0,2·200: na falta, um acesso à tabela e outro ao dado."],["Qual algoritmo de substituição pode ter MAIS faltas com MAIS quadros?","FIFO","LRU","Ótimo","Nenhum","Anomalia de Belady: 1,2,3,4,1,2,5,1,2,3,4,5 dá 9 faltas com 3 quadros e 10 com 4. Algoritmos de pilha não sofrem disso."],["Sequência 7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1 com 3 quadros. Quantas faltas o LRU causa?","12","15","9","10","FIFO dá 15 e o ótimo 9 (exemplo de Silberschatz)."],["Qual é a solução clássica para o thrashing?","Reduzir o grau de multiprogramação, suspendendo processos","Aumentar o grau de multiprogramação","Trocar LRU por FIFO","Aumentar o tamanho da página para 1 GB","Thrashing ocorre quando a soma dos conjuntos de trabalho excede a memória."],["O que faz a cópia na escrita (copy-on-write)?","Pai e filho compartilham páginas após o fork até que um deles escreva","Copia todas as páginas no momento do fork","Grava cada página no disco a cada escrita","Impede escritas em páginas compartilhadas","Só a página escrita é duplicada, o que torna o fork barato."],["Qual é a principal limitação da contagem de referências?","Não recupera estruturas com ciclos","Precisa parar todo o programa para varrer o heap","Não libera objetos imediatamente","Só funciona em C","Por isso o CPython a combina com um coletor de ciclos."],["Em que se apoiam os coletores geracionais?","Na hipótese de que a maioria dos objetos morre jovem","Na hipótese de que objetos antigos morrem primeiro","Na contagem de referências","Na ordem de alocação na pilha","Coleta-se a geração nova com frequência e a antiga raramente (JVM, .NET)."],["Onde ficam as variáveis locais de uma função?","Na pilha, dentro do registro de ativação","No heap","No segmento de dados","No segmento de código","Alocação automática: o registro é empilhado na chamada e desempilhado no retorno."],["O que é um ponteiro pendente?","Um ponteiro para memória já liberada","Memória alocada e nunca liberada","Liberar duas vezes o mesmo bloco","Escrever além do fim de um bloco","As outras são vazamento, dupla liberação e estouro de buffer."],["Endereços de 32 bits, páginas de 4 KB e entradas de 4 bytes. Quanto ocupa a tabela de páginas plana de um processo?","4 MB","4 KB","1 MB","4 GB","2^20 entradas × 4 bytes. Daí as tabelas multinível, com hash e invertidas."]],"6":[["Inserindo chaves já ordenadas numa ABB simples, quanto custa uma busca no pior caso?","Θ(n)","Θ(lg n)","Θ(1)","Θ(n lg n)","A árvore degenera numa lista de altura n − 1."],["Ao inserir 10, 20 e 30 numa AVL vazia, o que acontece?","Rotação simples à esquerda, e 20 vira a raiz","Rotação dupla, e 30 vira a raiz","Nenhuma rotação; 10 continua raiz","Rotação à direita, e 10 vira folha","O nó 10 fica com fator −2, com o desequilíbrio do mesmo lado nos dois níveis."],["Qual destas NÃO é uma propriedade da árvore rubro-negra?","Em cada nó, as alturas das subárvores diferem no máximo 1","A raiz é preta","Um nó vermelho não tem filho vermelho","Todo caminho até as folhas tem o mesmo número de nós pretos","A diferença de alturas ≤ 1 é a regra da AVL."],["Numa árvore B de grau mínimo t, quantas chaves tem cada nó (exceto a raiz)?","Entre t − 1 e 2t − 1","Entre t e 2t","Entre 1 e t","Exatamente t","Altura no máximo log_t((n + 1)/2): poucos acessos a disco."],["O que a árvore B+ tem de diferente da B?","Dados só nas folhas, que são encadeadas, o que favorece consultas por intervalo","Nós com uma única chave","Altura sempre 1","Não exige folhas no mesmo nível","É a estrutura dos índices de bancos de dados relacionais."],["Quanto custa buscar uma chave de comprimento m numa trie?","O(m), independente do número de chaves","O(lg n)","O(n)","O(m lg n)","Uma aresta por caractere. O ponto fraco é a memória, que Patricia e a árvore ternária reduzem."],["Com encadeamento e hashing uniforme simples, quanto custa em média uma busca?","Θ(1 + α)","Θ(α²)","Θ(lg n)","Θ(1/(1 − α))","α = n/m é o tamanho médio das listas. 1/(1 − α) é o limite do endereçamento aberto."],["Endereçamento aberto com α = 0,5 e hashing uniforme: qual é o limite de sondagens numa busca sem sucesso?","2","1,5","4","0,5","1/(1 − α) = 1/0,5 = 2. Com α = 0,9, já seriam 10."],["Que problema a sondagem linear sofre?","Agrupamento primário","Agrupamento secundário","Nenhuma colisão","Rehashing a cada inserção","Longas sequências ocupadas crescem e atraem mais chaves. A quadrática sofre o agrupamento secundário."],["Como remover uma chave numa tabela com endereçamento aberto?","Marcando a posição como removida","Esvaziando a posição","Reorganizando a tabela inteira a cada remoção","Não é possível remover","Esvaziar interromperia as sequências de sondagem de outras chaves."],["m = 11, h(k) = k mod 11, sondagem linear, inserindo 10, 22, 31, 4, 15, 28, 17, 88, 59. Em que posição fica o 59?","8","4","9","5","59 mod 11 = 4; as posições 4, 5, 6 e 7 estão ocupadas por 4, 15, 28 e 17."],["O que garante o hashing universal?","Probabilidade de colisão de no máximo 1/m para duas chaves distintas","Nenhuma colisão","Colisão com probabilidade α","Busca O(1) no pior caso","A função é sorteada de uma família como ((ak + b) mod p) mod m."]],"2":[["Que estrutura se usa para avaliar uma expressão em notação pós-fixa?","Pilha","Fila","Heap","Tabela hash","Operandos são empilhados; cada operador desempilha dois e empilha o resultado."],["Qual é o valor de 5 3 + 2 × 8 4 / −?","14","12","18","6","5 + 3 = 8; 8 × 2 = 16; 8 / 4 = 2; 16 − 2 = 14."],["Numa fila circular que deixa uma posição vazia, quando ela está cheia?","Quando (fim + 1) mod n = início","Quando fim = início","Quando fim = n − 1","Quando início = 0","fim = início indica fila vazia. A alternativa é manter um contador de elementos."],["Que estrutura a busca em largura usa?","Fila","Pilha","Deque com prioridade","Lista ordenada","A fila garante a visita por distância crescente. A busca em profundidade usa pilha."],["Em qual estrutura se remove um nó conhecido em O(1)?","Lista duplamente encadeada","Lista simplesmente encadeada","Vetor","Vetor ordenado","Na lista simples é preciso achar o antecessor; no vetor é preciso deslocar."],["Para que serve um nó-cabeça ou sentinela?","Eliminar casos especiais, como lista vazia e inserção no início","Fazer a busca custar O(lg n)","Economizar memória","Manter a lista ordenada","O código de inserção e remoção fica igual para todas as posições."],["Quanto custa acessar o k-ésimo elemento de uma lista encadeada?","O(k)","O(1)","O(lg k)","O(1) amortizado","É preciso percorrer k nós. No vetor, o acesso é direto, O(1)."],["Quanto custa inserir no fim de um vetor dinâmico que dobra quando enche?","O(1) amortizado","O(n) sempre","O(lg n)","O(1) no pior caso","Uma realocação custa Θ(n), mas é rara: o total de n inserções é O(n)."],["Qual afirmação sobre deques é correta?","Inserem e removem nas duas pontas em O(1), com vetor circular ou lista dupla","Só permitem inserir numa ponta","Remover no fim custa O(n) com vetor circular","São implementados com árvores","Pilha e fila são casos particulares do deque."],["Quanto custam a inserção e a remoção do máximo numa fila de prioridade com heap binário?","O(lg n) e O(lg n)","O(1) e O(1)","O(n) e O(1)","O(lg n) e O(n)","Subida e descida pela altura do heap. Usada em Dijkstra, Prim, Huffman e escalonadores."],["O que um tipo abstrato de dados separa?","Especificação (operações e comportamento) e implementação","Dados e ponteiros","Pilha e heap","Compilação e execução","Permite trocar a representação sem alterar os programas que usam o tipo."],["Numa lista simplesmente encadeada com ponteiro para o fim, quanto custa remover o último nó?","O(n)","O(1)","O(lg n)","O(1) amortizado","É preciso achar o penúltimo para atualizar o ponteiro. Na lista dupla, custa O(1)."]],"10":[["Qual linguagem introduziu classes, objetos, herança e procedimentos virtuais?","Simula 67","Smalltalk","C++","Java","Dahl e Nygaard, na Noruega. Smalltalk (Kay, Xerox PARC) veio na década de 1970."],["Quando e como a sobrecarga de métodos é resolvida?","Em tempo de compilação, pela assinatura (tipos dos argumentos)","Em tempo de execução, pela tabela virtual","Pelo tipo de retorno","Em tempo de carga da classe","A sobrescrita é que é resolvida em execução, pela ligação dinâmica."],["Na classificação de Cardelli e Wegner, List<T> é polimorfismo:","Universal paramétrico","Ad hoc por sobrecarga","Ad hoc por coerção","Universal de inclusão","O mesmo código funciona para qualquer tipo T. Inclusão é o de subtipos."],["Somar um int a um double em Java é exemplo de polimorfismo:","Ad hoc por coerção","Universal paramétrico","Universal de inclusão","Ligação dinâmica","A conversão implícita de tipos é coerção."],["Como a ligação dinâmica costuma ser implementada?","Com uma tabela virtual por classe e um ponteiro para ela em cada objeto","Com uma busca por nome numa tabela hash a cada chamada","Recompilando a classe em execução","Com sobrecarga de métodos","A chamada é um acesso indireto pela tabela, em tempo constante."],["class A { String m() { return \"A\"; } } class B extends A { String m() { return \"B\"; } } — A x = new B(); x.m() devolve:","\"B\"","\"A\"","Erro de compilação","\"AB\"","Upcasting: a versão executada é a da classe real do objeto (ligação dinâmica)."],["void f(Object o) imprime \"obj\" e void f(String s) imprime \"str\". Com Object o = \"oi\"; f(o) imprime:","obj","str","Erro de compilação","obj e str","Sobrecarga é escolhida pelo tipo estático do argumento (Object), em compilação."],["Em C++, como se evita a duplicação dos membros da base no problema do diamante?","Com herança virtual","Com interfaces","Com a palavra-chave final","Com funções friend","Java evita o problema permitindo herança simples de classes e múltipla só de interfaces."],["Quadrado herdando de Retângulo, com setLargura e setAltura independentes, viola:","O princípio de substituição de Liskov","O princípio aberto-fechado","O encapsulamento","A sobrecarga","Um cliente que muda só a largura de um retângulo não espera que a altura mude."],["Qual afirmação sobre classes abstratas e interfaces está correta?","Classe abstrata não pode ser instanciada e pode ter estado e métodos implementados","Interface pode ser instanciada diretamente","Classe abstrata não pode ter construtor","Uma classe Java pode estender várias classes abstratas","Em Java a herança de classes é simples; múltipla, só de interfaces."],["Em Java, um membro protected é visível:","No mesmo pacote e nas subclasses","Só na própria classe","Só nas subclasses do mesmo pacote","Em qualquer classe","private: só na classe; padrão: no pacote; public: em todas."],["O Comparator passado a um método de ordenação é exemplo de qual padrão de projeto?","Strategy","Template Method","Singleton","Observer","O algoritmo de comparação é um objeto intercambiável, por composição. Template Method usa herança."]]},"cards":{"8":[["Definição de O(g(n))","f ∈ O(g) se existem c > 0 e n0 com 0 ≤ f(n) ≤ c·g(n) para todo n ≥ n0 (limite superior)."],["Definições de Ω e Θ","Ω: f(n) ≥ c·g(n) a partir de n0 (limite inferior). Θ: c1·g(n) ≤ f(n) ≤ c2·g(n) (limite justo)."],["Hierarquia das ordens de crescimento","1 ≺ lg n ≺ √n ≺ n ≺ n lg n ≺ n² ≺ n³ ≺ 2ⁿ ≺ n!"],["Somatórios essenciais","Σi = n(n+1)/2; Σ2^i (i = 0..k) = 2^{k+1} − 1; H_n = Σ1/i = ln n + O(1)."],["Invariante de laço","Inicialização (vale antes da 1ª iteração), manutenção (é preservado), término (com a condição de parada, dá o resultado)."],["Teorema mestre: T(n) = aT(n/b) + f(n)","Comparar f com n^{log_b a}: menor → Θ(n^{log_b a}); igual → Θ(n^{log_b a} lg n); maior + regularidade → Θ(f(n))."],["Recorrências clássicas","Merge sort 2T(n/2)+n = Θ(n lg n); busca binária T(n/2)+1 = Θ(lg n); Strassen 7T(n/2)+n² = Θ(n^{2,81})."],["Métodos de resolução de recorrências","Substituição (chute + indução), árvore de recursão (soma por nível), teorema mestre."],["Análise amortizada","Métodos agregado, contábil e do potencial. Vetor dinâmico: < 3n no total → O(1). Contador binário: < 2n mudanças de bit."],["Análise probabilística","Indicadoras: E[I{A}] = Pr(A) + linearidade. Contratação: H_n. Quicksort aleatorizado ≈ 1,39·n lg n comparações."],["Limite inferior da ordenação por comparação","Árvore de decisão com ≥ n! folhas → altura ≥ lg(n!) = Ω(n lg n)."],["Análise empírica","Razão de dobramento: T(2n)/T(n) ≈ 2^b quando T(n) ≈ a·n^b."]],"1":[["Três etapas da divisão e conquista","Dividir em subproblemas do mesmo tipo, conquistar recursivamente, combinar as soluções."],["Exemplos de D&C e custos","Merge sort Θ(n lg n); busca binária Θ(lg n); Karatsuba 3T(n/2)+n = Θ(n^{1,585}); Strassen Θ(n^{2,81})."],["Duas propriedades para programação dinâmica","Subestrutura ótima e subproblemas sobrepostos (Bellman, década de 1950)."],["Quatro passos da programação dinâmica","Caracterizar a estrutura, definir a recorrência, calcular (em geral de baixo para cima), reconstruir a solução."],["Memoização × tabela ascendente","Memoização: recursão de cima para baixo com consulta à tabela. Ascendente: preenche dos menores para os maiores."],["Recorrência da mochila 0/1","K[i,c] = K[i−1,c] se w_i > c; senão max(K[i−1,c], K[i−1,c−w_i] + v_i). Custo Θ(nW), pseudopolinomial."],["Recorrência da LCS","c[i,j] = c[i−1,j−1] + 1 se x_i = y_j; senão max(c[i−1,j], c[i,j−1]). Θ(mn)."],["Custos de PD clássicos","Corte de hastes Θ(n²); cadeia de matrizes Θ(n³); LCS Θ(mn); Floyd-Warshall Θ(V³)."],["Condições do algoritmo guloso","Propriedade da escolha gulosa + subestrutura ótima; prova por argumento de troca."],["Seleção de atividades","Escolher a que termina primeiro e repetir entre as compatíveis. Θ(n lg n) com a ordenação."],["Huffman","Fila de prioridade: juntar os dois nós de menor frequência até sobrar a árvore. O(n lg n). Usado no DEFLATE."],["Exemplo da mochila (W = 5)","w = (1,2,3), v = (60,100,120): fracionária 240; guloso 0/1 160; ótimo 0/1 220 com {2,3}."]],"4":[["Quatro propriedades de um método de ordenação","Estável, in-place, adaptativo; ordenação interna × externa."],["Ordenação por inserção","Θ(n) / Θ(n²) / Θ(n²); deslocamentos = inversões; estável, in-place, adaptativa."],["Seleção e bolha","Seleção: n(n−1)/2 comparações, n − 1 trocas, não estável. Bolha: estável; com indicador, Θ(n) no melhor caso."],["Shellsort","Inserção com incrementos h decrescentes (Shell, 1959). Knuth 3h+1 → O(n^{3/2}). In-place, não estável."],["Merge sort","2T(n/2)+Θ(n) = Θ(n lg n) sempre; estável; Θ(n) extra; base da ordenação externa."],["Quicksort","Hoare (1961); Lomuto ou Hoare; pior Θ(n²); médio Θ(n lg n); aleatorizado ≈ 1,39·n lg n; não estável; O(lg n) de pilha."],["Heapsort","Construção do heap Θ(n); n extrações O(lg n); Θ(n lg n) in-place; não estável."],["Lomuto em [2,8,7,1,3,5,6,4], pivô 4","Resultado [2,1,3,4,7,5,6,8]; devolve a posição 4; 7 comparações."],["Counting, Radix e Bucket sort","Counting Θ(n+k), estável; Radix Θ(d(n+k)) com subrotina estável; Bucket Θ(n) esperado com chaves uniformes."],["Ordenação nas bibliotecas","Introsort (Quick + Heap + inserção, C++); Timsort (runs + Merge, Python e objetos Java); dual-pivot Quicksort (primitivos Java)."],["Ordenação externa","Ordenar blocos na memória e intercalar k sequências com fila de prioridade, minimizando passadas no disco."]],"5":[["Objetivos da criptografia","Confidencialidade, integridade, autenticidade e não repúdio. Kerckhoffs: o segredo está só na chave."],["Euclides e Euclides estendido","mdc(a,b) = mdc(b, a mod b), O(lg b). Estendido: ax + by = mdc → x é o inverso de a mod b quando mdc = 1."],["Fermat, Euler e φ","φ(pq) = (p−1)(q−1). Euler: a^{φ(n)} ≡ 1 (mod n). Fermat: a^{p−1} ≡ 1 (mod p)."],["Teorema chinês do resto","Sistema x ≡ a_i (mod n_i), com n_i primos entre si, tem solução única módulo o produto. Acelera a decifração RSA ~4×."],["Exponenciação modular","Quadrados repetidos: para cada bit do expoente, eleva ao quadrado e multiplica pela base se o bit é 1. O(lg e) multiplicações."],["DES e AES","DES: blocos de 64, chave de 56, 16 rodadas Feistel. AES: blocos de 128, chaves de 128/192/256, 10/12/14 rodadas."],["Modos de operação","ECB revela padrões; CBC encadeia; CTR vira cifra de fluxo; GCM acrescenta autenticação."],["Diffie-Hellman (1976)","A = g^a, B = g^b, K = g^{ab} mod p. Ex.: p = 23, g = 5, a = 6, b = 15 → A = 8, B = 19, K = 2. Base: logaritmo discreto."],["Chaves do RSA (1978)","n = pq; e com mdc(e, φ) = 1; d = e⁻¹ mod φ. Pública (e, n); privada (d, n). C = M^e, M = C^d mod n."],["Exemplo RSA","p = 5, q = 11: n = 55, φ = 40, e = 3, d = 27. M = 9 → C = 14 → 14^{27} mod 55 = 9."],["Primalidade","Fermat falha em Carmichael (561). Miller-Rabin: Monte Carlo, erra só ao dizer \"primo\" (≤ 2^{−s}; 4^{−s} por Rabin). AKS (2002): P."],["Hash e assinatura","Hash: pré-imagem, segunda pré-imagem, colisão (SHA-256, SHA-3). Assinatura RSA: S = H(M)^d; verifica S^e = H(M)."],["Pós-quântica","Shor (1994) quebra RSA, DH, ECC; Grover → AES-256. NIST 2024: FIPS 203 ML-KEM, 204 ML-DSA, 205 SLH-DSA."]],"9":[["Classe P","Problemas de decisão resolvidos por algoritmo determinístico em tempo polinomial. Ex.: caminho mínimo, PL (Khachiyan, 1979), primalidade (AKS)."],["Classe NP e co-NP","NP: certificado do \"sim\" verificável em tempo polinomial (≡ MT não determinística). co-NP: certificado do \"não\" (tautologia)."],["Redução polinomial A ≤p B","f polinomial com x ∈ A ⟺ f(x) ∈ B. Se B ∈ P, então A ∈ P."],["NP-difícil × NP-completo","NP-difícil: todo NP se reduz a ele. NP-completo: NP-difícil e em NP. Um deles em P ⇒ P = NP."],["Marcos históricos","Cook (1971) e Levin (1973): SAT é NP-completo. Karp (1972): 21 problemas. Garey e Johnson (1979): catálogo."],["Roteiro de prova de NP-completude","(1) B ∈ NP: certificado + verificador. (2) Conhecido ≤p B, provando os dois sentidos."],["3-SAT ≤p Clique","Vértice por literal (3k), arestas entre cláusulas diferentes com literais consistentes; clique de tamanho k ⟺ satisfatível."],["Clique e cobertura","G tem clique k ⟺ complemento tem cobertura de vértices |V| − k."],["Pares fácil × difícil","2-SAT ∈ P × 3-SAT NPC; euleriano ∈ P × hamiltoniano NPC; caminho mínimo ∈ P × caminho simples máximo NP-difícil."],["Hierarquia de classes","P ⊆ NP ⊆ PSPACE ⊆ EXP; P ≠ EXP. Ladner: se P ≠ NP, há NP-intermediários (fatoração, isomorfismo de grafos)."],["Lidando com a intratabilidade","Aproximação (cobertura 2; PCV métrico 2 e Christofides 1,5), pseudopolinomial, branch and bound, SAT solvers, casos especiais, parametrizados O(2^k·n), heurísticas."],["Tempos a 10⁹ op/s","2^50 ≈ 13 dias; 2^100 ≈ 4 × 10^13 anos; 20! ≈ 77 anos; n² com n = 100: 10 µs."]],"3":[["Propriedades de árvores","n vértices → n − 1 arestas; caminho único entre dois vértices; binária de altura h tem até 2^{h+1} − 1 nós."],["Percursos da árvore A(B(D,E), C(–,F))","Pré: A B D E C F. Em ordem: D B E A C F. Pós: D E B F C A. Nível: A B C D E F."],["Árvores especiais","ABB O(h); AVL |hE − hD| ≤ 1, h < 1,44 lg n; rubro-negra h ≤ 2 lg(n+1); heap para fila de prioridade; B para disco."],["Terminologia de grafos","Orientado, ponderado, grau (entrada/saída), Σ graus = 2|E|, caminho, ciclo, conexo, fortemente conexo, DAG."],["Matriz × listas de adjacência","Matriz Θ(V²), teste de aresta O(1). Listas Θ(V+E), vizinhos em O(grau)."],["BFS","Fila; distâncias em número de arestas; árvore de caminhos mínimos não ponderados; O(V+E)."],["DFS","Pilha ou recursão; tempos d[v] e f[v]; teorema dos parênteses; arestas de árvore, retorno, avanço e cruzadas; O(V+E)."],["Aplicações das buscas","Componentes conexos; ciclo ⟺ aresta de retorno; ordenação topológica por f decrescente; CFC (Kosaraju, Tarjan)."],["Caminhos mínimos","Dijkstra (pesos ≥ 0) O((V+E) lg V); Bellman-Ford O(VE), ciclos negativos; Floyd-Warshall Θ(V³)."],["Árvore geradora mínima","Kruskal O(E lg E) com union-find; Prim O(E lg V) com heap; corretos pela propriedade do corte."],["Fluxo máximo","Ford-Fulkerson com caminhos aumentantes; Edmonds-Karp O(VE²); fluxo máximo = corte mínimo."],["Exemplo de Dijkstra (Cormen)","Origem s: d(y) = 5, d(z) = 7, d(t) = 8, d(x) = 9; caminho s → y → t → x."]],"7":[["Hierarquia de memória","Registradores (compilador), caches (hardware), RAM (SO + MMU), disco. Localidade temporal e espacial."],["Alocação contígua","Base e limite; first-fit, best-fit, worst-fit; fragmentação externa (compactação) × interna."],["Paginação: tradução","Endereço = (p, d); físico = quadro·tamanho + d. Ex.: 13.000 com páginas de 4 KB → p = 3, d = 712; quadro 9 → 37.576."],["TLB e tabelas grandes","Tempo efetivo: 0,8·100 + 0,2·200 = 120 ns. 32 bits e 4 KB → 2^20 entradas (4 MB) → multinível, hash, invertida."],["Segmentação","(segmento, deslocamento) com base e limite; visão do programador; fragmentação externa; segmentação paginada."],["Memória virtual","Paginação por demanda, bit de validade, falta de página tratada pelo SO, cópia na escrita após fork."],["Substituição de páginas","FIFO (Belady), ótimo, LRU, relógio. Exemplo de 20 referências e 3 quadros: FIFO 15, ótimo 9, LRU 12."],["Anomalia de Belady","FIFO com 1,2,3,4,1,2,5,1,2,3,4,5: 9 faltas com 3 quadros, 10 com 4."],["Thrashing","Soma dos conjuntos de trabalho > memória; resolver reduzindo a multiprogramação. Alocação igual × proporcional, global × local."],["Memória de um programa","Código, dados/bss, heap (cresce para cima), pilha (para baixo) com registros de ativação. Estática, automática, dinâmica."],["Erros na gerência manual","Vazamento, ponteiro pendente, dupla liberação, estouro de buffer."],["Alocadores e coleta de lixo","Lista livre, coalescência, buddy, slab. GC: contagem de referências (ciclos), marcação e varredura (McCarthy, 1960), cópia, geracional; RAII; posse em Rust."],["Integração SO × linguagem","malloc → brk (pequenos) ou mmap (≥ 128 KB na glibc); quadros só no primeiro acesso; JVM reserva o heap com mmap."]],"6":[["TAD dicionário","Busca, inserção e remoção por chave; às vezes mínimo, máximo, sucessor, intervalo e prefixo."],["Remoção em ABB","Folha: retira. Um filho: sobe o filho. Dois filhos: troca pelo sucessor (mínimo da subárvore direita)."],["AVL","Fator de balanceamento −1, 0 ou 1; rotações simples e duplas; h < 1,44 lg(n+2). Ex.: 10, 20, 30 → rotação à esquerda, raiz 20."],["Rubro-negra","Raiz preta; vermelho sem filho vermelho; mesma altura negra; h ≤ 2 lg(n+1); até 2 rotações na inserção e 3 na remoção."],["Árvore B e B+","Grau mínimo t: t−1 a 2t−1 chaves; h ≤ log_t((n+1)/2); cresce pela raiz. B+: dados nas folhas encadeadas → índices de BD."],["Tries","Busca O(m) no tamanho da chave; consulta por prefixo; memória alta; variantes Patricia e árvore ternária (Bentley e Sedgewick)."],["Funções de hash","Divisão k mod m (m primo); multiplicação ⌊m(kA mod 1)⌋, A ≈ 0,618; universal ((ak+b) mod p) mod m, colisão ≤ 1/m."],["Encadeamento × endereçamento aberto","Encadeamento: Θ(1+α). Aberto: sem sucesso ≤ 1/(1−α); com sucesso ≤ (1/α) ln(1/(1−α))."],["Sondagens","Linear (agrupamento primário), quadrática (secundário), hash duplo h1 + i·h2. Remoção com marca; rehashing amortizado O(1)."],["Exemplo m = 11","Chaves 10, 22, 31, 4, 15, 28, 17, 88, 59 com sondagem linear → [22, 88, –, –, 4, 15, 28, 17, 59, 31, 10]; 59 na 5ª sondagem."],["Dicionários nas linguagens","Python dict: endereçamento aberto. Java HashMap: encadeamento, fator 0,75, listas longas viram rubro-negras. TreeMap: rubro-negra."]],"2":[["TAD e representações","TAD = especificação × implementação. Sequencial: acesso O(1), deslocamentos O(n). Encadeada: atualização local O(1), acesso O(k)."],["Tipos de lista","Simples, dupla, circular; nó-cabeça ou sentinela elimina casos especiais."],["Pilha (LIFO)","Empilhar, desempilhar, topo em O(1) com vetor ou lista; overflow e underflow."],["Aplicações da pilha","Chamadas e recursão, delimitadores, avaliação pós-fixa, pátio de manobras de Dijkstra, backtracking, DFS, desfazer."],["Fila (FIFO) circular","Índices módulo n; vazia se início = fim; cheia se (fim+1) mod n = início (ou contador)."],["Aplicações da fila","Round-robin, impressão, buffers produtor-consumidor, BFS, simulação."],["Deque","Inserção e remoção nas duas pontas em O(1) (vetor circular ou lista dupla); pilha e fila são casos particulares."],["Exemplo pós-fixo","(5 + 3) · 2 − 8 / 4 → 5 3 + 2 · 8 4 / − → 14."],["Exemplo de fila circular (n = 5)","A B C D (cheia); retira A e B; E na posição 4, F na 0 → cheia com C D E F."],["Custos por representação","Remover no fim: vetor O(1), lista simples O(n), lista dupla O(1). Inserir no fim de vetor dinâmico: O(1) amortizado."],["Fila de prioridade","Heap binário: inserção e remoção do máximo em O(lg n). Usada em Dijkstra, Prim, Huffman, escalonadores."]],"10":[["Origens da POO","Simula 67 (Dahl e Nygaard): classe, objeto, herança, virtual. Smalltalk (Kay, Xerox PARC, anos 1970). C++ (anos 1980), Java (1995)."],["Classe e objeto","Classe: atributos e métodos. Objeto: estado, comportamento e identidade. Mensagem = chamada de método. static = membro de classe."],["Abstração e encapsulamento","Representar o essencial; ocultar a representação (Parnas, 1972). Java: private, pacote, protected, public."],["Relações entre classes","\"Tem um\": associação, agregação, composição (parte morre com o todo). \"É um\": herança."],["Sobrecarga × sobrescrita","Sobrecarga: mesmo nome, assinatura diferente, resolvida em compilação. Sobrescrita: mesma assinatura na subclasse, resolvida em execução."],["Herança múltipla","Problema do diamante; C++ usa herança virtual; Java permite só herança simples de classes e múltipla de interfaces."],["Cardelli e Wegner (1985)","Universal: paramétrico (generics, templates) e inclusão (subtipos). Ad hoc: sobrecarga e coerção."],["Ligação dinâmica","Upcasting + método sobrescrito → versão da classe real; tabela virtual; downcasting com instanceof ou dynamic_cast."],["Classe abstrata × interface","Abstrata: não instancia, pode ter estado e código. Interface: contrato. C++: métodos virtuais puros."],["Liskov e Wing (1994)","Subtipo deve substituir o supertipo sem quebrar propriedades. Quadrado × Retângulo viola. GoF: prefira composição à herança."],["Padrões de projeto","Strategy: algoritmos intercambiáveis por composição (Comparator). Template Method: esqueleto na superclasse. Frameworks: inversão de controle."]]},"trilha":{"8":[{"t":"O que é um algoritmo e o que é custo","nv":"Base","tx":["Um algoritmo é uma receita: uma sequência finita de passos precisos que transforma uma entrada numa saída. Procurar um nome numa lista, ordenar provas por nota ou achar o caminho mais curto até o trabalho são problemas, e para cada um existem vários algoritmos possíveis. Analisar algoritmos é comparar essas receitas antes de executá-las.","Para comparar, não adianta medir em segundos, porque o tempo muda com o computador, com a linguagem e até com o que mais está rodando na máquina. Em vez disso, conta-se o número de passos elementares, como comparar dois valores, somar ou copiar um dado, supondo que cada um custa 1. Esse acordo se chama modelo RAM.","O número de passos depende do tamanho da entrada, que se chama n: o número de nomes da lista, de provas a ordenar ou de cidades no mapa. O custo de um algoritmo é, portanto, uma função T(n), e a pergunta central da análise é como T(n) cresce quando n cresce."],"ps":{"t":"Dois jeitos de achar \"Joana\" numa lista ordenada de 8 nomes: Ana, Bruno, Carla, Davi, Eva, Joana, Lia, Rui","i":["Busca sequencial: compara com Ana, Bruno, Carla, Davi, Eva e, na sexta comparação, encontra Joana.","Busca binária: olha o meio da lista (Davi, 4ª posição). Joana vem depois de Davi, então descarta a primeira metade.","Sobram Eva, Joana, Lia, Rui. Olha o meio (Joana, 2ª dessas). Encontrou na segunda comparação.","Com 1.000 nomes, a sequencial pode precisar de 1.000 comparações; a binária, de no máximo 10, porque 2¹⁰ = 1.024.","Conclusão: os dois algoritmos resolvem o mesmo problema, mas o custo de um cresce como n e o do outro como lg n."]},"ck":[["Por que a análise conta passos em vez de medir segundos?","Porque o tempo em segundos depende da máquina e da linguagem; os passos dependem só do algoritmo","Porque contar passos é mais preciso que um cronômetro","Porque os computadores modernos são todos iguais","O modelo RAM permite comparar algoritmos de forma independente do equipamento."],["Numa lista ordenada de 1.000 nomes, quantas comparações a busca binária faz no máximo?","10","500","1.000","Cada comparação corta a lista pela metade: 1.000 → 500 → 250 → … → 1, cerca de lg 1.000 ≈ 10 passos."]],"lv":"Custo é número de passos em função do tamanho n da entrada; o que interessa é como ele cresce."},{"t":"Melhor caso, pior caso e caso médio","nv":"Base","tx":["Entradas do mesmo tamanho podem dar trabalhos muito diferentes. Na busca sequencial, se o nome procurado é o primeiro da lista, basta uma comparação; se é o último ou não está na lista, são n comparações. Por isso a análise distingue três situações para cada tamanho n.","O melhor caso é a entrada mais favorável e diz pouco, porque raramente se pode contar com ela. O pior caso é a entrada mais desfavorável e é o mais usado, porque funciona como garantia: o algoritmo nunca será mais lento do que isso. O caso médio é o custo esperado quando as entradas seguem alguma distribuição, em geral todas igualmente prováveis.","Pense em ordenar cartas na mão, inserindo cada carta nova na posição certa entre as que já estão ordenadas. Se as cartas já chegam em ordem, cada uma fica onde está; se chegam em ordem decrescente, cada carta nova precisa passar por todas as anteriores. Esse método, a ordenação por inserção, custa cerca de n passos no melhor caso e cerca de n²/2 no pior. Além do tempo, a análise também mede o espaço, isto é, a memória extra que o algoritmo usa."],"ps":{"t":"Ordenação por inserção das cartas 5, 2, 4, 6, 1, 3, contando deslocamentos","i":["Começa com [5]. Insere 2: o 5 desloca uma posição → [2, 5] (1 deslocamento).","Insere 4: o 5 desloca → [2, 4, 5] (1).","Insere 6: nada desloca → [2, 4, 5, 6] (0).","Insere 1: 6, 5, 4 e 2 deslocam → [1, 2, 4, 5, 6] (4).","Insere 3: 6, 5 e 4 deslocam → [1, 2, 3, 4, 5, 6] (3).","Total: 9 deslocamentos. Com as cartas já ordenadas seriam 0; em ordem decrescente seriam 15 = 6·5/2."]},"ck":[["Qual caso funciona como garantia de desempenho?","O pior caso","O melhor caso","O caso médio","O pior caso é um limite que nunca é ultrapassado, qualquer que seja a entrada."],["Na busca sequencial em n elementos, quantas comparações há no melhor caso?","1","n/2","n","Se o elemento procurado é o primeiro, a busca termina na primeira comparação."]],"lv":"Para cada n há melhor, pior e caso médio; o pior caso é a garantia usada na maioria das análises."},{"t":"Ordens de crescimento e a notação O, Ω e Θ","nv":"Conceito","tx":["Quando n fica grande, o que decide o custo é a forma do crescimento, e não os detalhes. Com n = 1.000, lg n é cerca de 10, n lg n cerca de 10.000, n² um milhão e 2ⁿ um número com mais de 300 dígitos. Constantes multiplicativas e termos menores perdem importância: 3n² + 10n + 5 e n² crescem da mesma forma.","A notação assintótica dá nome a isso. Dizer que f(n) é O(g(n)) significa que, a partir de algum n, f fica abaixo de um múltiplo de g: é um teto, como \"no máximo da ordem de\". Dizer que f(n) é Ω(g(n)) significa um piso, \"pelo menos da ordem de\". E Θ(g(n)) significa as duas coisas ao mesmo tempo, um limite justo.","Formalmente, f(n) ∈ Θ(g(n)) quando existem constantes positivas c1, c2 e n0 tais que c1·g(n) ≤ f(n) ≤ c2·g(n) para todo n ≥ n0. As funções mais comuns, em ordem crescente, são 1, lg n, √n, n, n lg n, n², n³, 2ⁿ e n!. Na prova, vale escrever a definição, dar um exemplo com as constantes e mostrar essa hierarquia."],"ps":{"t":"Mostrar que 3n² + 10n + 5 é Θ(n²)","i":["Limite inferior: 3n² + 10n + 5 ≥ 3n² para todo n ≥ 1. Então c1 = 3 serve.","Limite superior: queremos 3n² + 10n + 5 ≤ 4n², ou seja, n² − 10n − 5 ≥ 0.","Testando: n = 10 dá 100 − 100 − 5 = −5 (não vale); n = 11 dá 121 − 110 − 5 = 6 (vale).","Logo c2 = 4 e n0 = 11 funcionam: 3n² ≤ 3n² + 10n + 5 ≤ 4n² para todo n ≥ 11.","Conclusão: 3n² + 10n + 5 ∈ Θ(n²). Os termos 10n e 5 não mudam a ordem de crescimento."]},"ck":[["5n³ + 100n é de que ordem?","Θ(n³)","Θ(n)","Θ(n⁴)","O termo de maior grau domina; constantes não mudam a ordem."],["O que significa f(n) ∈ O(g(n))?","A partir de algum n, f fica abaixo de um múltiplo de g","f e g são iguais para n grande","f fica acima de um múltiplo de g","O é um limite superior (teto); Ω é o inferior; Θ, os dois."],["Qual cresce mais rápido?","n²","n lg n","n","n² = n·n e n lg n = n·lg n; como n cresce mais que lg n, n² vence."]],"lv":"O é teto, Ω é piso, Θ é justo; constantes e termos menores não importam."},{"t":"Contando passos: somatórios e invariantes","nv":"Conceito","tx":["Quando um algoritmo repete um passo dentro de outro, o custo vira uma soma. O exemplo clássico é o dos cumprimentos: se n pessoas se cumprimentam uma única vez cada par, a primeira aperta n − 1 mãos, a segunda n − 2 novas, e assim por diante, num total de n(n − 1)/2. Como isso é da ordem de n², algoritmos que comparam todos os pares são Θ(n²).","Três somas aparecem o tempo todo. A aritmética 1 + 2 + … + n = n(n + 1)/2, a geométrica 1 + 2 + 4 + … + 2ᵏ = 2ᵏ⁺¹ − 1, que é menos que o dobro do último termo, e a harmônica 1 + 1/2 + 1/3 + … + 1/n, que é aproximadamente ln n.","Contar passos só faz sentido se o algoritmo estiver certo, e a ferramenta para provar isso em repetições é o invariante de laço: uma propriedade que vale antes de cada volta. Na ordenação de cartas, o invariante é \"as cartas à esquerda da posição atual estão ordenadas\". A prova tem três partes: inicialização (vale antes da primeira volta), manutenção (se vale antes de uma volta, continua valendo depois) e término (quando a repetição acaba, o invariante dá o resultado desejado)."],"ps":{"t":"O truque de Gauss para somar 1 + 2 + … + 100","i":["Escreva a soma de frente para trás embaixo dela mesma: 1 + 2 + … + 100 e 100 + 99 + … + 1.","Somando coluna por coluna, cada par dá 101: 1 + 100, 2 + 99, 3 + 98…","São 100 colunas, então as duas somas juntas dão 100 · 101 = 10.100.","Cada soma é a metade: 10.100 / 2 = 5.050.","Em geral, 1 + 2 + … + n = n(n + 1)/2, que é Θ(n²)."]},"ck":[["Quantos apertos de mão há entre 10 pessoas, se cada par se cumprimenta uma vez?","45","100","90","n(n − 1)/2 = 10 · 9 / 2 = 45."],["Quais são as três partes de uma prova por invariante de laço?","Inicialização, manutenção e término","Base, passo e conclusão","Entrada, processamento e saída","O invariante vale no início, é preservado a cada volta e, no fim, garante o resultado."]],"lv":"Repetições viram somas; a correção de uma repetição se prova com invariante (inicialização, manutenção, término)."},{"t":"Recursão, recorrências e o teorema mestre","nv":"Aprofundamento","tx":["Muitos algoritmos resolvem um problema grande chamando a si mesmos em pedaços menores. Para ordenar uma pilha de provas, pode-se dividi-la em duas metades, ordenar cada metade do mesmo jeito e depois intercalar as duas pilhas ordenadas, o que leva cerca de n passos. Esse é o Merge sort, e o seu custo se escreve como uma recorrência: T(n) = 2T(n/2) + n.","Uma forma visual de resolver recorrências é a árvore de recursão. No primeiro nível há um problema de tamanho n, com custo n de intercalação; no segundo, dois de tamanho n/2, com custo total n; no terceiro, quatro de n/4, de novo n. Como o tamanho cai pela metade a cada nível, há cerca de lg n níveis, e o total é n lg n.","O teorema mestre resolve de uma vez recorrências da forma T(n) = aT(n/b) + f(n), em que a é o número de pedaços, n/b o tamanho de cada um e f(n) o trabalho fora das chamadas. Compara-se f(n) com n^{log_b a}, que mede o trabalho nas folhas da árvore. Se as folhas dominam, o custo é Θ(n^{log_b a}); se empatam, multiplica-se por lg n; se f(n) domina (com uma condição técnica de regularidade), o custo é Θ(f(n)). O Merge sort é o empate: n^{log_2 2} = n = f(n), logo Θ(n lg n)."],"ps":{"t":"Árvore de recursão do Merge sort com n = 8","i":["Nível 0: um problema de tamanho 8; intercalar custa 8.","Nível 1: dois problemas de tamanho 4; intercalar custa 4 + 4 = 8.","Nível 2: quatro problemas de tamanho 2; custo 2 + 2 + 2 + 2 = 8.","Nível 3: oito problemas de tamanho 1, já ordenados (as folhas).","São lg 8 = 3 níveis com trabalho 8 cada: total 8 · 3 = 24 = n lg n.","Pelo teorema mestre: a = 2, b = 2, n^{log_2 2} = n, igual a f(n) = n, caso de empate: Θ(n lg n)."]},"ck":[["Qual é a solução de T(n) = T(n/2) + 1 (busca binária)?","Θ(lg n)","Θ(n)","Θ(1)","a = 1, b = 2, n^{log_2 1} = 1 = f(n): empate, Θ(1 · lg n)."],["Qual é a solução de T(n) = 4T(n/2) + n?","Θ(n²)","Θ(n lg n)","Θ(n)","n^{log_2 4} = n² domina f(n) = n: as folhas dominam."]],"lv":"Recursão vira recorrência; árvore de recursão e teorema mestre a resolvem comparando o trabalho de fora com o das folhas."},{"t":"Custo amortizado, sorteio e limites inferiores","nv":"Aprofundamento","tx":["Às vezes uma operação é cara, mas raramente. Uma lista guardada num bloco de memória que dobra de tamanho quando enche precisa, de vez em quando, copiar tudo para um bloco maior. A análise amortizada calcula o custo médio por operação numa sequência inteira, no pior caso: como as cópias custam 1 + 2 + 4 + …, menos que o dobro do número de elementos, cada inserção custa, em média, uma constante. É como um cofrinho: cada inserção paga três moedas, uma para si e duas guardadas para a próxima cópia. Os três métodos de Cormen são o agregado, o contábil (o do cofrinho) e o do potencial.","A análise probabilística calcula o custo esperado quando há sorteio, seja nos dados, seja no próprio algoritmo. No Quicksort com pivô sorteado, o número esperado de comparações é cerca de 1,39 n lg n para qualquer entrada. A ferramenta é a variável indicadora, que vale 1 se um evento ocorre e 0 se não, cuja média é a probabilidade do evento.","Por fim, um limite inferior mostra que nenhum algoritmo pode ser melhor que certo custo. Ordenar comparando é como adivinhar, com perguntas de sim ou não, qual das n! ordens possíveis é a certa; cada pergunta no máximo divide as possibilidades ao meio, então são necessárias pelo menos lg(n!) perguntas, que é da ordem de n lg n. Por isso Merge sort e Heapsort são ótimos entre os algoritmos que só comparam."],"ps":{"t":"Inserindo 9 elementos numa lista que dobra quando enche (capacidade inicial 1)","i":["Capacidades ao longo do tempo: 1, 2, 4, 8, 16.","Cópias ao crescer: ao passar de 1 para 2 copia 1; de 2 para 4 copia 2; de 4 para 8 copia 4; de 8 para 16 copia 8.","Total de cópias: 1 + 2 + 4 + 8 = 15.","Total de escritas: 9 inserções + 15 cópias = 24, menos que 3 · 9 = 27.","Custo amortizado por inserção: no máximo 3, isto é, O(1), embora a 9ª inserção sozinha tenha custado 9."]},"ck":[["Qual é o custo amortizado de inserir no fim de uma lista que dobra quando enche?","O(1)","O(lg n)","O(n)","O total de n inserções é menor que 3n."],["Para ordenar 3 elementos só comparando, quantas comparações são necessárias no pior caso, no mínimo?","3","2","6","Há 3! = 6 ordens possíveis e lg 6 ≈ 2,6, então são necessárias pelo menos 3 perguntas de sim ou não."]],"lv":"Amortizada: média numa sequência no pior caso. Probabilística: média sobre sorteios. Limite inferior: ninguém faz melhor que isso."}],"1":[{"t":"Força bruta e a ideia de paradigma","nv":"Base","tx":["Diante de um problema, a solução mais óbvia é testar todas as possibilidades e ficar com a melhor. Essa é a força bruta. Ela é simples e sempre correta, mas costuma ser cara: para escolher quais de n objetos levar numa mochila, há 2ⁿ combinações, e com 50 objetos isso passa de um quatrilhão.","Um paradigma de projeto é uma estratégia geral que funciona para muitos problemas diferentes. Em vez de inventar uma solução para cada problema, o projetista reconhece uma estrutura e aplica um método conhecido. Os três paradigmas deste ponto são a divisão e conquista (quebrar em pedaços independentes), a programação dinâmica (guardar respostas de subproblemas que se repetem) e o algoritmo guloso (escolher o que parece melhor agora e nunca voltar atrás)."],"ps":{"t":"Força bruta para uma mochila de capacidade 5 com itens A (peso 1, valor 60), B (2, 100) e C (3, 120)","i":["Com 3 itens há 2³ = 8 combinações: {}, {A}, {B}, {C}, {A,B}, {A,C}, {B,C}, {A,B,C}.","Pesos: 0, 1, 2, 3, 3, 4, 5, 6. A última passa da capacidade 5 e é descartada.","Valores das válidas: 0, 60, 100, 120, 160, 180, 220.","A melhor é {B, C}, com peso 5 e valor 220.","Com 30 itens seriam mais de um bilhão de combinações: daí a necessidade de estratégias melhores."]},"ck":[["Quantas combinações a força bruta testa numa mochila com 20 itens?","2²⁰, cerca de um milhão","20","20², isto é, 400","Cada item entra ou não: 2 opções para cada um dos 20 itens."],["O que é um paradigma de projeto de algoritmos?","Uma estratégia geral que se aplica a muitos problemas","Um algoritmo específico para ordenar","Uma linguagem de programação","Divisão e conquista, programação dinâmica e guloso são paradigmas."]],"lv":"Força bruta testa tudo e serve de referência; paradigmas são atalhos gerais para evitá-la."},{"t":"Divisão e conquista","nv":"Conceito","tx":["A divisão e conquista tem três etapas: dividir o problema em pedaços menores do mesmo tipo, conquistar cada pedaço resolvendo-o da mesma forma, e combinar as respostas. Ela funciona bem quando os pedaços são independentes, isto é, quando resolver um não ajuda a resolver o outro.","O exemplo mais simples é o jogo de adivinhar um número de 1 a 100 com respostas \"maior\" ou \"menor\": chutar o meio corta as possibilidades pela metade a cada pergunta, e 7 perguntas bastam. Essa é a busca binária. No Merge sort, divide-se a lista ao meio, ordena-se cada metade e intercalam-se as duas; no Quicksort, separam-se os elementos menores e maiores que um pivô e ordena-se cada lado. Outros exemplos são o subarranjo de soma máxima e as multiplicações rápidas de Karatsuba (números) e Strassen (matrizes).","A análise usa recorrências. Se o problema vira a pedaços de tamanho n/b e dividir mais combinar custa f(n), então T(n) = aT(n/b) + f(n). Para o Merge sort, T(n) = 2T(n/2) + n = Θ(n lg n); para a busca binária, T(n) = T(n/2) + 1 = Θ(lg n); para Karatsuba, T(n) = 3T(n/2) + n = Θ(n^{1,585})."],"ps":{"t":"Adivinhar o número 37 entre 1 e 100 chutando sempre o meio","i":["Intervalo 1–100, chute 50: a resposta é \"menor\". Sobra 1–49.","Chute 25: \"maior\". Sobra 26–49.","Chute 37 (meio de 26 a 49): acertou na terceira pergunta.","No pior caso seriam 7 perguntas, porque 2⁷ = 128 ≥ 100.","Cada pergunta divide o problema em um pedaço com metade do tamanho: T(n) = T(n/2) + 1 = Θ(lg n)."]},"ck":[["Quantas perguntas bastam, no pior caso, para adivinhar um número de 1 a 1.000?","10","100","500","2¹⁰ = 1.024 ≥ 1.000."],["Qual é a recorrência do Merge sort?","T(n) = 2T(n/2) + n","T(n) = T(n − 1) + n","T(n) = T(n/2) + 1","Dois pedaços de metade do tamanho e intercalação linear."]],"lv":"Dividir, conquistar, combinar; pedaços independentes; custo por recorrência."},{"t":"Programação dinâmica: não refazer contas","nv":"Conceito","tx":["Às vezes, ao dividir um problema, os mesmos subproblemas aparecem muitas vezes. Calcular a sequência de Fibonacci (1, 1, 2, 3, 5, 8…) pela regra F(n) = F(n − 1) + F(n − 2), sem guardar nada, refaz F(n − 2) dentro de F(n) e de F(n − 1), e o número de chamadas cresce exponencialmente. A programação dinâmica, proposta por Richard Bellman, resolve isso guardando a resposta de cada subproblema numa tabela e consultando-a em vez de recalcular.","Ela se aplica quando o problema tem duas propriedades. A subestrutura ótima diz que a melhor solução do problema é formada por melhores soluções de subproblemas. A sobreposição de subproblemas diz que os mesmos subproblemas se repetem. Há duas formas de implementar: de cima para baixo com memoização (resolve recursivamente e anota cada resposta) ou de baixo para cima (preenche a tabela dos menores para os maiores).","O roteiro tem quatro passos: caracterizar a estrutura da solução ótima, escrever a recorrência do valor ótimo, calcular a tabela e reconstruir a solução. O custo costuma ser o número de células da tabela vezes o trabalho por célula."],"ps":{"t":"De quantas formas se sobe uma escada de 5 degraus, subindo 1 ou 2 por vez?","i":["Para chegar ao degrau n, o último movimento veio do degrau n − 1 ou do n − 2: f(n) = f(n − 1) + f(n − 2).","Casos base: f(1) = 1 (um passo) e f(2) = 2 (1+1 ou 2).","Tabela de baixo para cima: f(3) = 2 + 1 = 3.","f(4) = 3 + 2 = 5.","f(5) = 5 + 3 = 8 formas. Cada valor foi calculado uma única vez: custo Θ(n), em vez de exponencial."]},"ck":[["Quais propriedades indicam programação dinâmica?","Subestrutura ótima e subproblemas sobrepostos","Subproblemas independentes","Escolha gulosa","Sem sobreposição, a divisão e conquista basta."],["Qual é a diferença entre memoização e a forma de baixo para cima?","A memoização mantém a recursão e anota respostas; a outra preenche a tabela dos menores para os maiores","A memoização não usa tabela","A forma de baixo para cima é sempre exponencial","As duas guardam respostas; muda só a ordem de cálculo."]],"lv":"PD = recorrência + tabela; exige subestrutura ótima e subproblemas sobrepostos."},{"t":"Programação dinâmica na prática: mochila e LCS","nv":"Aprofundamento","tx":["Na mochila 0/1, cada item entra inteiro ou não entra. Seja K[i, c] o melhor valor usando os i primeiros itens com capacidade c. Para o item i, há duas opções: não levá-lo, ficando com K[i − 1, c], ou levá-lo, se couber, ficando com K[i − 1, c − peso] + valor. A recorrência escolhe a maior das duas, e a tabela tem n linhas e W + 1 colunas, com custo Θ(nW).","Esse custo parece polinomial, mas W é um número, e o tamanho da entrada é o número de dígitos de W, não o seu valor. Por isso o algoritmo é chamado de pseudopolinomial, e a mochila continua sendo um problema difícil em geral.","A maior subsequência comum (LCS) segue a mesma lógica. Para duas palavras, c[i, j] é o tamanho da maior subsequência comum dos primeiros i e j caracteres: se os caracteres atuais são iguais, soma-se 1 ao valor da diagonal; senão, fica o maior entre o de cima e o da esquerda. Para \"GATO\" e \"PATO\", a LCS é \"ATO\", de tamanho 3, e o custo é Θ(mn). Outros exemplos clássicos são o corte de hastes, a ordem de multiplicação de matrizes e a distância de edição."],"ps":{"t":"Mochila com capacidade 5 e itens (peso, valor): 1 (1, 60), 2 (2, 100), 3 (3, 120)","i":["Linha do item 1: com capacidade 1 ou mais, leva o item 1 → 0, 60, 60, 60, 60, 60.","Linha do item 2: capacidade 2 → max(60, 0 + 100) = 100; capacidade 3 → max(60, 60 + 100) = 160; 4 e 5 → 160. Linha: 0, 60, 100, 160, 160, 160.","Linha do item 3: capacidade 4 → max(160, 60 + 120) = 180; capacidade 5 → max(160, 100 + 120) = 220. Linha: 0, 60, 100, 160, 180, 220.","Resposta: K[3, 5] = 220.","Reconstrução: 220 ≠ 160 (célula de cima), então o item 3 entrou; sobra capacidade 2, onde 100 ≠ 60, então o item 2 entrou. Solução {2, 3}."]},"ck":[["Por que o algoritmo Θ(nW) da mochila é chamado de pseudopolinomial?","Porque W pode ser enorme comparado ao número de dígitos usados para escrevê-lo","Porque usa uma tabela","Porque só funciona para W par","O tamanho da entrada conta os dígitos de W, não o seu valor."],["Qual é a LCS de \"GATO\" e \"PATO\"?","ATO, de tamanho 3","GATO, de tamanho 4","TO, de tamanho 2","As letras A, T e O aparecem nessa ordem nas duas palavras."]],"lv":"Mochila: K[i,c] = max(sem o item, com o item); LCS: diagonal + 1 se iguais, senão o maior vizinho."},{"t":"Algoritmos gulosos e a comparação dos três paradigmas","nv":"Aprofundamento","tx":["O algoritmo guloso constrói a solução fazendo, a cada passo, a escolha que parece melhor no momento, sem voltar atrás. Dar troco com moedas brasileiras (50, 25, 10, 5 e 1 centavo) usando sempre a maior moeda possível funciona: 68 centavos viram 50 + 10 + 5 + 1 + 1 + 1. Mas com moedas de 1, 3 e 4, o troco de 6 vira 4 + 1 + 1, quando 3 + 3 usaria só duas moedas.","O guloso só é correto quando valem a propriedade da escolha gulosa (existe uma solução ótima que começa pela escolha gulosa) e a subestrutura ótima. A prova usa um argumento de troca: pega-se uma solução ótima qualquer e mostra-se que trocar um elemento dela pela escolha gulosa não piora nada. Exemplos corretos são a seleção de atividades (escolher a que termina primeiro), os códigos de Huffman (juntar os dois símbolos menos frequentes), Kruskal e Prim (árvore geradora mínima) e Dijkstra (caminhos mínimos).","Comparando os três: a divisão e conquista trata subproblemas independentes e se analisa por recorrência; a programação dinâmica trata subproblemas repetidos testando todas as escolhas e guardando os resultados; o guloso faz uma escolha por passo e é o mais rápido, mas exige prova. Na mochila 0/1 o guloso falha e a PD resolve; na mochila fracionária, em que se pode levar parte de um item, o guloso pela maior razão valor/peso é ótimo."],"ps":{"t":"Seleção de atividades numa sala: A 8h–9h, B 8h30–11h, C 9h–10h, D 9h30–12h, E 10h–11h, F 11h–12h","i":["Ordene pelo horário de término: A (9h), C (10h), B (11h), E (11h), D (12h), F (12h).","Escolha A, que termina primeiro.","A próxima compatível (começa depois das 9h) que termina primeiro é C (9h–10h).","Depois de C, a compatível que termina primeiro é E (10h–11h).","Depois de E, sobra F (11h–12h). Resultado: A, C, E, F, 4 atividades, o máximo possível."]},"ck":[["Na seleção de atividades, qual é a escolha gulosa correta?","A atividade que termina primeiro","A que começa primeiro","A mais curta","Terminar cedo deixa o maior espaço livre para as demais."],["Em qual problema o guloso falha e a programação dinâmica resolve?","Mochila 0/1","Mochila fracionária","Seleção de atividades","Na 0/1 o item não pode ser dividido, e a escolha pela razão deixa espaço desperdiçado."],["Floyd-Warshall é um algoritmo de qual paradigma?","Programação dinâmica","Guloso","Divisão e conquista","Ele preenche uma tabela de distâncias permitindo, a cada etapa, mais um vértice intermediário."]],"lv":"Guloso: escolha local sem volta, provada por troca. D&C: pedaços independentes. PD: pedaços repetidos com tabela."}],"4":[{"t":"O que é ordenar e o que se espera de um método","nv":"Base","tx":["Ordenar é colocar uma sequência em ordem crescente segundo um critério. Na prática, os elementos são registros, como fichas de alunos, e a comparação é feita por um campo chamado chave, como a nota; o resto da ficha acompanha a chave. Ordenar é útil por si só e também como passo de outros algoritmos, como a busca binária.","Quatro propriedades distinguem os métodos. Um método é estável quando mantém a ordem original de registros com chaves iguais, o que permite ordenar por nota sem bagunçar uma ordem alfabética anterior. É in-place quando usa só uma quantidade constante de memória extra. É adaptativo quando fica mais rápido se a entrada já estiver quase ordenada. E a ordenação é interna quando tudo cabe na memória e externa quando os dados estão em disco."],"ps":{"t":"Ordenação estável por nota de: Ana 8, Bia 7, Caio 8, Davi 7 (já em ordem alfabética)","i":["As chaves são as notas: 8, 7, 8, 7.","Notas 7 vêm primeiro: Bia e Davi. Como o método é estável, Bia (que vinha antes) continua antes de Davi.","Notas 8 em seguida: Ana antes de Caio, pelo mesmo motivo.","Resultado: Bia 7, Davi 7, Ana 8, Caio 8, ordenado por nota e, dentro de cada nota, por nome.","Um método instável poderia devolver Davi antes de Bia: a ordem por nota estaria certa, mas a alfabética se perderia."]},"ck":[["O que é um método de ordenação estável?","Mantém a ordem original de registros com chaves iguais","Usa pouca memória extra","Fica mais rápido em entradas quase ordenadas","As outras alternativas descrevem in-place e adaptativo."],["Quando a ordenação é externa?","Quando os dados não cabem na memória e estão em disco","Quando é feita por outro computador","Quando a chave é um texto","Na ordenação externa o custo dominante é ler e escrever blocos no disco."]],"lv":"Chave, registro; estável, in-place, adaptativo; interna × externa."},{"t":"Métodos simples: inserção, seleção e bolha","nv":"Base","tx":["A ordenação por inserção é o jeito de arrumar cartas na mão: cada carta nova é inserida na posição certa entre as já ordenadas, deslocando as maiores. Custa cerca de n passos se a entrada já está ordenada e cerca de n²/2 no pior caso, é estável, in-place e adaptativa, e por isso é ótima para listas pequenas ou quase ordenadas.","A ordenação por seleção procura o menor elemento e o coloca na primeira posição, depois o segundo menor na segunda, e assim por diante. Faz sempre cerca de n²/2 comparações, mas só n − 1 trocas, o que ajuda quando mover registros é caro; na versão usual não é estável. O método da bolha compara vizinhos e troca os que estão fora de ordem, fazendo o maior \"subir\" ao fim a cada passada; é estável, mas é o mais lento dos três na prática.","Os três são Θ(n²) no pior caso. O Shellsort melhora a inserção ordenando primeiro elementos distantes h posições e diminuindo h até 1; com a sequência de Knuth (1, 4, 13, 40…), o pior caso cai para O(n^{3/2})."],"ps":{"t":"Seleção em [5, 2, 4, 6, 1, 3]","i":["Menor de tudo é 1: troca com o 5 → [1, 2, 4, 6, 5, 3].","Menor do resto (2, 4, 6, 5, 3) é 2, que já está no lugar → [1, 2, 4, 6, 5, 3].","Menor do resto (4, 6, 5, 3) é 3: troca com o 4 → [1, 2, 3, 6, 5, 4].","Menor do resto (6, 5, 4) é 4: troca com o 6 → [1, 2, 3, 4, 5, 6].","Os dois últimos já estão em ordem. Foram 15 comparações (5 + 4 + 3 + 2 + 1) e poucas trocas."]},"ck":[["Qual método simples é o melhor para uma lista quase ordenada?","Inserção","Seleção","Bolha","A inserção é adaptativa: cada elemento quase não se desloca."],["Quantas trocas a seleção faz em n elementos?","No máximo n − 1","Cerca de n²/2","Nenhuma","Uma troca por posição; as comparações é que são cerca de n²/2."]],"lv":"Inserção (cartas na mão), seleção (pega o menor), bolha (vizinhos): todos Θ(n²); inserção é adaptativa."},{"t":"Merge sort e Quicksort","nv":"Conceito","tx":["O Merge sort aplica divisão e conquista: divide a lista ao meio, ordena cada metade e intercala as duas metades ordenadas, como juntar duas pilhas de provas já em ordem pegando sempre a de cima de menor nota. A recorrência T(n) = 2T(n/2) + n dá Θ(n lg n) em todos os casos. Ele é estável, mas precisa de uma área extra do tamanho da lista para intercalar.","O Quicksort escolhe um elemento, o pivô, e separa a lista em menores ou iguais ao pivô e maiores que ele; o pivô fica na posição definitiva e cada lado é ordenado do mesmo jeito. Quando o pivô divide a lista em partes parecidas, o custo é Θ(n lg n); quando divide muito mal, como ao pegar sempre o último de uma lista já ordenada, o custo vira Θ(n²). Sortear o pivô torna o custo esperado Θ(n lg n) para qualquer entrada, com cerca de 1,39 n lg n comparações. Ele não é estável, mas costuma ser o mais rápido na prática.","O particionamento de Lomuto percorre a lista uma vez, mantendo à esquerda os elementos menores ou iguais ao pivô e, ao final, coloca o pivô logo depois deles. O de Hoare usa dois índices que vêm das pontas e faz menos trocas."],"ps":{"t":"Merge sort em [5, 2, 4, 6, 1, 3, 8, 7]","i":["Divide até sobrar pedaços de 1: [5] [2] [4] [6] [1] [3] [8] [7].","Intercala de dois em dois: [2, 5] [4, 6] [1, 3] [7, 8].","Intercala de quatro em quatro: [2, 4, 5, 6] e [1, 3, 7, 8].","Intercala as duas metades: compara 2 e 1 → 1; 2 e 3 → 2; 4 e 3 → 3; 4 e 7 → 4; 5 → 5; 6 → 6; sobram 7 e 8.","Resultado: [1, 2, 3, 4, 5, 6, 7, 8], com lg 8 = 3 níveis de intercalação de 8 elementos cada."]},"ck":[["Quando o Quicksort tem custo Θ(n²)?","Quando o pivô divide a lista sempre de forma muito desequilibrada","Quando os elementos são todos diferentes","Quando o pivô é sorteado","Ex.: lista já ordenada e pivô sempre o último elemento."],["Qual é a vantagem do Merge sort sobre o Quicksort?","É Θ(n lg n) em todos os casos e é estável","Não usa memória extra","É sempre mais rápido na prática","Em troca, precisa de memória extra Θ(n) para intercalar."]],"lv":"Merge: divide e intercala, Θ(n lg n) sempre, estável. Quick: particiona pelo pivô, Θ(n lg n) em média, Θ(n²) no pior."},{"t":"Heapsort e o limite de n lg n","nv":"Conceito","tx":["Um heap máximo é uma árvore binária quase completa, guardada em sequência, em que cada elemento é maior ou igual aos seus filhos; o maior de todos fica na raiz. Na posição i, os filhos estão nas posições 2i e 2i + 1, o que dispensa ponteiros. Construir um heap a partir de uma lista qualquer custa Θ(n), fazendo cada elemento \"descer\" até a posição certa, de baixo para cima.","O Heapsort constrói o heap e depois repete: troca a raiz (o maior) com o último elemento do heap, diminui o heap em um e faz a nova raiz descer, em O(lg n). O total é Θ(n lg n) no pior caso, sem memória extra, mas o método não é estável.","Nenhum método que só compara elementos pode fazer melhor que n lg n. Todo algoritmo assim pode ser desenhado como uma árvore de decisão, em que cada pergunta é uma comparação e cada folha é uma das n! ordens possíveis. Uma árvore binária de altura h tem no máximo 2ʰ folhas, então 2ʰ ≥ n!, o que dá h ≥ lg(n!), que é da ordem de n lg n. Merge sort e Heapsort atingem esse limite e são, por isso, assintoticamente ótimos."],"ps":{"t":"Construir um heap máximo a partir de [3, 1, 6, 5, 2, 4] (posições 1 a 6)","i":["As folhas (posições 4, 5 e 6) já são heaps. Começa pela posição 3: o 6 tem filho 4 (posição 6) e já é maior. Nada muda.","Posição 2: o 1 tem filhos 5 e 2. O maior filho é 5: troca → [3, 5, 6, 1, 2, 4].","Posição 1: o 3 tem filhos 5 e 6. O maior é 6: troca → [6, 5, 3, 1, 2, 4].","O 3 desceu para a posição 3, cujo filho é 4: troca → [6, 5, 4, 1, 2, 3].","Heap pronto: 6 ≥ 5 e 4; 5 ≥ 1 e 2; 4 ≥ 3. O Heapsort agora troca o 6 com o último e repete."]},"ck":[["Quanto custa construir um heap a partir de uma lista qualquer?","Θ(n)","Θ(n lg n)","Θ(n²)","A maioria dos elementos está perto das folhas e desce pouco."],["Por que nenhuma ordenação por comparação é melhor que n lg n?","Porque a árvore de decisão precisa de n! folhas, e isso exige altura de ordem n lg n","Porque o Merge sort é o mais rápido possível","Porque comparar é uma operação cara","h ≥ lg(n!) = Ω(n lg n)."]],"lv":"Heap: pai ≥ filhos, filhos em 2i e 2i + 1; Heapsort Θ(n lg n) in-place; limite Ω(n lg n) pela árvore de decisão."},{"t":"Ordenar sem comparar e a ordenação na prática","nv":"Aprofundamento","tx":["O limite de n lg n vale só para quem compara. Se as chaves são inteiros pequenos, dá para contar. O Counting sort, para chaves de 0 a k, conta quantas vezes aparece cada valor, calcula onde cada valor começa e copia os elementos para as posições certas, de trás para a frente para ser estável, em Θ(n + k). O Radix sort ordena números dígito a dígito, do menos para o mais significativo, usando a cada dígito uma ordenação estável, em Θ(d(n + k)). O Bucket sort espalha valores uniformes de 0 a 1 em n baldes, ordena cada balde e junta tudo, em Θ(n) esperado.","Na prática, as bibliotecas combinam métodos. O Introsort, do C++, começa como Quicksort, passa para Heapsort se a recursão ficar funda demais e usa inserção em pedaços pequenos. O Timsort, do Python e do Java para objetos, é um Merge sort que aproveita trechos já ordenados e chega a Θ(n) em listas ordenadas. Quando os dados não cabem na memória, ordenam-se blocos e depois intercalam-se vários blocos de uma vez.","Na prova, um quadro comparativo resume tudo: inserção Θ(n) a Θ(n²), estável e adaptativa; seleção Θ(n²) sempre; Merge Θ(n lg n), estável, memória Θ(n); Quick Θ(n lg n) em média e Θ(n²) no pior, não estável; Heap Θ(n lg n), in-place, não estável; Counting Θ(n + k) e Radix Θ(d(n + k)), estáveis."],"ps":{"t":"Counting sort das notas [3, 1, 3, 0, 2, 1], com chaves de 0 a 3","i":["Conta: nota 0 aparece 1 vez, nota 1 aparece 2, nota 2 aparece 1, nota 3 aparece 2.","Somas acumuladas (quantos são menores ou iguais): 0 → 1, 1 → 3, 2 → 4, 3 → 6.","Isso diz onde termina cada grupo: o 0 ocupa a posição 1; os 1 vão até a 3; o 2 fica na 4; os 3 vão até a 6.","Copiando cada elemento para o fim do seu grupo, de trás para a frente: [0, 1, 1, 2, 3, 3].","Nenhuma comparação entre elementos foi feita: custo Θ(n + k)."]},"ck":[["Por que o Counting sort pode ser mais rápido que n lg n?","Porque não compara elementos: usa as chaves como posições","Porque o limite de n lg n só vale no caso médio","Porque usa vários processadores","O limite Ω(n lg n) é só para algoritmos baseados em comparação."],["O que o Radix sort exige da ordenação usada em cada dígito?","Que seja estável","Que seja in-place","Que seja por comparação","A estabilidade preserva a ordem obtida nos dígitos anteriores."]],"lv":"Sem comparar: Counting Θ(n + k), Radix Θ(d(n + k)), Bucket Θ(n) esperado. Na prática: Introsort, Timsort, ordenação externa."}]},"dias":{"2026-11-24":{"tipo":"estudo","pontos":[8],"pool":[],"texto":"Ponto 8 (análise de algoritmos)"},"2026-11-25":{"tipo":"estudo","pontos":[8],"pool":[],"texto":"Ponto 8 (análise de algoritmos)"},"2026-11-26":{"tipo":"estudo","pontos":[1],"pool":[],"texto":"Ponto 1 (divisão e conquista, PD, gulosos)"},"2026-11-27":{"tipo":"estudo","pontos":[4],"pool":[],"texto":"Ponto 4 (ordenação)"},"2026-11-28":{"tipo":"estudo","pontos":[5,9],"pool":[],"texto":"Pontos 5 e 9 (criptografia, classes de complexidade)"},"2026-11-29":{"tipo":"estudo","pontos":[5,9],"pool":[],"texto":"Pontos 5 e 9 (criptografia, classes de complexidade)"},"2026-11-30":{"tipo":"simulado","pontos":[],"pool":[1,4,5,8,9],"texto":"1º simulado, sorteando entre os pontos 1, 4, 5, 8 e 9"},"2026-12-01":{"tipo":"estudo","pontos":[3],"pool":[],"texto":"Ponto 3 (árvores e grafos)"},"2026-12-02":{"tipo":"estudo","pontos":[7],"pool":[],"texto":"Ponto 7 (gerenciamento de memória)"},"2026-12-03":{"tipo":"estudo","pontos":[6,2],"pool":[],"texto":"Pontos 6 e 2 (dicionários; estruturas lineares)"},"2026-12-04":{"tipo":"estudo-simulado","pontos":[10],"pool":[1,2,3,4,5,6,7,8,9,10],"texto":"Ponto 10 (POO) e 2º simulado com todos os pontos"},"2026-12-05":{"tipo":"revisao","pontos":[],"pool":[],"texto":"Revisão: esqueletos e flashcards (dia do memorial impresso)"},"2026-12-06":{"tipo":"leve","pontos":[],"pool":[],"texto":"Revisão leve e descanso"},"2026-12-07":{"tipo":"prova","pontos":[],"pool":[],"texto":"Prova escrita: sala 328, Bloco B, Campus Anglo, chegar antes das 8h"}},"criterios":["I – conteúdo: aderência ao tema sorteado e abordagem dos tópicos definidos pela Banca","II – forma: sequência lógica e fluida de organização dos parágrafos e de apresentação da argumentação","III – normas técnicas: adequado uso de citações e de referenciação bibliográfica no texto"]}</script>
+<script>
+(() => {
+  'use strict';
+  const D = JSON.parse(document.getElementById('dados').textContent);
+  const PONTOS = D.pontos;
+  const PT = Object.fromEntries(PONTOS.map((p) => [p.p, p]));
+  const CHAVE = 'ufpel-cc-jogo-v1';
+  const PROVA = new Date(2026, 11, 7, 8, 0, 0);
+  const NIVEIS = [[0,'Inscrito'],[200,'Homologado'],[500,'Leitor do Cormen'],[900,'Monitor'],[1400,'Mestre das recorrências'],[2000,'Doutor em grafos'],[2700,'Revisor de banca'],[3500,'Professor substituto'],[4500,'Professor adjunto'],[6000,'Aprovado em 1º lugar']];
+  const INTERVALO = {1:1, 2:2, 3:4, 4:7, 5:14};
+
+  // ---------- utilidades ----------
+  const pad = (n) => String(n).padStart(2, '0');
+  const dataStr = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const hoje = () => dataStr(new Date());
+  const somaDias = (s, n) => { const [y, m, d] = s.split('-').map(Number); return dataStr(new Date(y, m - 1, d + n)); };
+  const fmtData = (s) => { const [y, m, d] = s.split('-'); return d + '/' + m; };
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const escolhe = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const embaralha = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const mil = (n) => n.toLocaleString('pt-BR');
+  function el(tag, attrs, ...filhos) {
+    const e = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => {
+      if (v === null || v === undefined || v === false) return;
+      if (k === 'class') e.className = v; else if (k === 'html') e.innerHTML = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+    });
+    filhos.flat().forEach((f) => { if (f === null || f === undefined || f === false) return; e.append(f instanceof Node ? f : document.createTextNode(String(f))); });
+    return e;
+  }
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // expoentes do tipo n^{2,81} ou 2^{−s} viram <sup>
+  const fmt = (s) => esc(s).replace(/\^\{([^}]+)\}/g, '<sup>$1</sup>');
+
+  // ---------- estado ----------
+  const novoEstado = () => ({ v: 1, xp: 0, dias: {}, quiz: {}, cards: {}, calc: { certos: 0, tent: 0 }, esq: {}, red: [], conq: {}, lic: {}, lck: {}, pulou: {}, criado: hoje() });
+  let estado;
+  try { estado = JSON.parse(localStorage.getItem(CHAVE)) || novoEstado(); } catch (e) { estado = novoEstado(); }
+  ['lic', 'lck', 'pulou'].forEach((k) => { if (!estado[k]) estado[k] = {}; });
+  const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(estado)); } catch (e) {} };
+  const dia = (s) => { s = s || hoje(); if (!estado.dias[s]) estado.dias[s] = { xp: 0, quiz: [], cards: 0, calc: {}, esq: [], red: [], lic: 0, missao: false }; return estado.dias[s]; };
+  const qz = (p) => estado.quiz[p] || (estado.quiz[p] = { melhor: 0, tent: 0, passou: false, perfeito: false });
+  const liberado = (p) => !!(estado.quiz[p] && estado.quiz[p].passou);
+  const trilha = (p) => (D.trilha || {})[p] || null;
+  const licFeita = (p, i) => !!estado.lic[p + '-' + i];
+  const trilhaFeita = (p) => !!trilha(p) && trilha(p).every((_, i) => licFeita(p, i));
+  const quizAberto = (p) => !trilha(p) || trilhaFeita(p) || !!estado.pulou[p];
+  const licoesFeitas = (p) => (trilha(p) || []).filter((_, i) => licFeita(p, i)).length;
+
+  function toast(txt) {
+    const box = document.getElementById('toast'); const t = el('div', {}, txt); box.append(t);
+    while (box.children.length > 3) box.firstChild.remove();
+    setTimeout(() => t.remove(), 2200);
+  }
+  function nivel(xp) {
+    let i = 0; while (i + 1 < NIVEIS.length && xp >= NIVEIS[i + 1][0]) i++;
+    return i;
+  }
+  function ganhar(n, motivo) {
+    if (!n) return;
+    const antes = nivel(estado.xp);
+    estado.xp += n; dia().xp += n;
+    toast('+' + n + ' XP · ' + motivo);
+    const depois = nivel(estado.xp);
+    if (depois > antes) setTimeout(() => toast('Novo nível: ' + NIVEIS[depois][1]), 700);
+    salvar(); verificarConquistas(); verificarMissao(); renderTudo();
+  }
+
+  // ---------- sequência ----------
+  function sequencia() {
+    let s = hoje(); if (!(estado.dias[s] && estado.dias[s].xp > 0)) s = somaDias(s, -1);
+    let n = 0; while (estado.dias[s] && estado.dias[s].xp > 0) { n++; s = somaDias(s, -1); }
+    return n;
+  }
+
+  // ---------- flashcards ----------
+  const cardId = (p, i) => p + '-' + i;
+  const cardsDo = (p) => (D.cards[p] || []).map((c, i) => ({ id: cardId(p, i), p, f: c[0], v: c[1] }));
+  const todosCards = () => PONTOS.flatMap((p) => cardsDo(p.p));
+  const vencido = (c) => { const s = estado.cards[c.id]; return !s || s.prox <= hoje(); };
+  const caixa = (c) => (estado.cards[c.id] ? estado.cards[c.id].cx : 0);
+
+  // ---------- missão do dia ----------
+  function tarefasHoje() {
+    const h = hoje(), info = D.dias[h], d = estado.dias[h] || { quiz: [], cards: 0, calc: {}, esq: [], red: [] };
+    const liberados = PONTOS.filter((p) => liberado(p.p)).map((p) => p.p);
+    const calcHoje = (pts) => pts.length ? pts.reduce((s, p) => s + (d.calc[p] || 0), 0) : Object.values(d.calc).reduce((s, n) => s + n, 0);
+    const t = [];
+    if (!info) {
+      if (h > '2026-12-07') return { texto: 'A prova escrita já passou. Boa sorte na didática!', tarefas: [] };
+      t.push(['Revisar 10 flashcards', d.cards >= 10]);
+      t.push(['Acertar 3 exercícios de cálculo', calcHoje([]) >= 3]);
+      return { texto: 'Dia livre no cronograma', tarefas: t };
+    }
+    if (info.tipo === 'prova') return { texto: info.texto, tarefas: [['Respirar, ler o ponto sorteado com calma e montar o esqueleto nos 30 minutos de consulta', false]] };
+    if (info.tipo === 'estudo' || info.tipo === 'estudo-simulado') {
+      info.pontos.forEach((p) => { if (trilha(p)) t.push(['Concluir a trilha de lições do ponto ' + p, trilhaFeita(p)]); });
+      info.pontos.forEach((p) => t.push(['Passar no quiz do ponto ' + p + ' (80% ou mais)', d.quiz.includes(p) || liberado(p)]));
+      t.push(['Revisar 10 flashcards', d.cards >= 10]);
+      t.push(['Acertar 3 cálculos do' + (info.pontos.length > 1 ? 's pontos ' : ' ponto ') + info.pontos.join(' e '), calcHoje(info.pontos) >= 3]);
+      const outros = liberados.filter((p) => !info.pontos.includes(p));
+      if (info.tipo === 'estudo' && outros.length) t.push(['Fazer 1 esqueleto de memória de um ponto já liberado', d.esq.length >= 1]);
+      if (info.tipo === 'estudo-simulado') t.push(['Simulado: redação completa de um ponto sorteado entre todos', d.red.some((r) => r.modo === 'completa')]);
+    } else if (info.tipo === 'simulado') {
+      t.push(['Simulado: redação completa de um ponto sorteado entre ' + info.pool.join(', '), d.red.some((r) => r.modo === 'completa')]);
+      t.push(['Revisar 10 flashcards', d.cards >= 10]);
+    } else if (info.tipo === 'revisao') {
+      t.push(['Fazer 3 esqueletos de memória', d.esq.length >= 3]);
+      t.push(['Revisar 20 flashcards', d.cards >= 20]);
+    } else if (info.tipo === 'leve') {
+      t.push(['Fazer 1 esqueleto de memória', d.esq.length >= 1]);
+      t.push(['Revisar 10 flashcards', d.cards >= 10]);
+    }
+    const atras = [...new Set(Object.entries(D.dias).filter(([dt, x]) => dt < h && x.pontos).flatMap(([, x]) => x.pontos))].filter((p) => trilha(p) && !trilhaFeita(p) && !(info.pontos || []).includes(p));
+    if (atras.length) t.push(['Pôr em dia (opcional): trilha do' + (atras.length > 1 ? 's pontos ' : ' ponto ') + atras.join(', '), false, true]);
+    return { texto: info.texto, tarefas: t };
+  }
+  function verificarMissao() {
+    const m = tarefasHoje(); const d = dia();
+    if (m.tarefas.length && m.tarefas.every((x) => x[1] || x[2]) && !d.missao && D.dias[hoje()] && D.dias[hoje()].tipo !== 'prova') {
+      d.missao = true; salvar(); setTimeout(() => ganhar(50, 'missão do dia cumprida'), 900);
+    }
+    renderMissao();
+  }
+  function renderMissao() {
+    const m = tarefasHoje();
+    document.getElementById('missao-sub').textContent = 'Cronograma de hoje: ' + m.texto + (m.tarefas.length && !(D.dias[hoje()] || {}).tipo?.startsWith('prova') ? '. Missão completa vale 50 XP.' : '');
+    const ul = document.getElementById('missao-lista'); ul.textContent = '';
+    m.tarefas.forEach(([txt, ok, opc]) => ul.append(el('li', { class: ok ? 'feita' : '', style: opc ? 'color:var(--muted)' : null }, el('span', { class: 'ck', 'aria-hidden': 'true' }, ok ? '✓' : opc ? '·' : '○'), el('span', { class: 't' }, txt), el('span', { class: 'sr-only', style: 'position:absolute;left:-9999px' }, ok ? ' (feito)' : ' (pendente)'))));
+  }
+
+  // ---------- conquistas ----------
+  const CONQ = [
+    ['l1', 'Primeira aula', 'Concluir a primeira lição', () => Object.keys(estado.lic).length >= 1],
+    ['t1', 'Trilha completa', 'Concluir a trilha de um ponto', () => PONTOS.some((p) => trilhaFeita(p.p))],
+    ['t3', 'Base sólida', 'Concluir as trilhas de 3 pontos', () => PONTOS.filter((p) => trilhaFeita(p.p)).length >= 3],
+    ['q1', 'Primeiro passo', 'Terminar o primeiro quiz', () => Object.values(estado.quiz).some((q) => q.tent > 0)],
+    ['f2', 'Destrancado', 'Liberar a fase 2 de um ponto', () => PONTOS.some((p) => liberado(p.p))],
+    ['q10', 'Programa completo', 'Liberar a fase 2 dos 10 pontos', () => PONTOS.every((p) => liberado(p.p))],
+    ['g', 'Gabaritou', 'Acertar 100% de um quiz', () => Object.values(estado.quiz).some((q) => q.perfeito)],
+    ['c100', 'Memória de elefante', 'Fazer 100 revisões de flashcards', () => Object.values(estado.dias).reduce((s, d) => s + d.cards, 0) >= 100],
+    ['c50', 'Na ponta da língua', 'Levar 50 cartões à caixa 4 ou 5', () => Object.values(estado.cards).filter((c) => c.cx >= 4).length >= 50],
+    ['k10', 'Calculista', 'Acertar 10 exercícios de cálculo', () => estado.calc.certos >= 10],
+    ['k30', 'Máquina de calcular', 'Acertar 30 exercícios de cálculo', () => estado.calc.certos >= 30],
+    ['e10', 'Arquiteto', 'Fazer 10 esqueletos de memória', () => Object.values(estado.esq).reduce((s, a) => s + a.length, 0) >= 10],
+    ['r1', 'Primeira página', 'Registrar a primeira redação', () => estado.red.length >= 1],
+    ['rc', 'Maratonista', 'Completar uma redação de 4 horas', () => estado.red.some((r) => r.modo === 'completa')],
+    ['r5', 'Redator', 'Registrar 5 redações', () => estado.red.length >= 5],
+    ['n9', 'Banca impressionada', 'Tirar 9 ou mais na correção', () => estado.red.some((r) => r.nota !== null && r.nota >= 9)],
+    ['s3', 'Constância', 'Estudar 3 dias seguidos', () => sequencia() >= 3],
+    ['s7', 'Disciplina', 'Estudar 7 dias seguidos', () => sequencia() >= 7],
+    ['m1', 'Missão cumprida', 'Completar uma missão do dia', () => Object.values(estado.dias).some((d) => d.missao)],
+    ['m5', 'Plano em dia', 'Completar 5 missões do dia', () => Object.values(estado.dias).filter((d) => d.missao).length >= 5],
+  ];
+  function verificarConquistas() {
+    CONQ.forEach(([id, nome, , teste]) => {
+      if (!estado.conq[id] && teste()) {
+        estado.conq[id] = hoje(); estado.xp += 30; dia().xp += 30; salvar();
+        setTimeout(() => toast('Conquista: ' + nome + ' (+30 XP)'), 400);
+      }
+    });
+  }
+
+  // ---------- topo ----------
+  function renderTopo() {
+    const i = nivel(estado.xp); const [base, nome] = NIVEIS[i]; const prox = NIVEIS[i + 1];
+    document.getElementById('nv-num').textContent = i + 1;
+    document.getElementById('nv-nome').textContent = nome;
+    document.getElementById('nv-bar').style.width = (prox ? Math.round(100 * (estado.xp - base) / (prox[0] - base)) : 100) + '%';
+    document.getElementById('nv-falta').textContent = prox ? 'Faltam ' + mil(prox[0] - estado.xp) + ' XP para ' + prox[1] : 'Nível máximo';
+    document.getElementById('xp').textContent = mil(estado.xp);
+    document.getElementById('xp-hoje').textContent = mil((estado.dias[hoje()] || { xp: 0 }).xp) + ' hoje';
+    const s = sequencia(); document.getElementById('seq').textContent = s;
+    document.getElementById('seq-sub').textContent = s === 1 ? 'dia estudando' : 'dias seguidos estudando';
+    document.getElementById('f1-num').textContent = PONTOS.filter((p) => liberado(p.p)).length;
+    document.getElementById('f0-num').textContent = PONTOS.filter((p) => trilhaFeita(p.p)).length + '/' + PONTOS.filter((p) => trilha(p.p)).length;
+    document.getElementById('f2-num').textContent = estado.red.length;
+    const dd = Math.ceil((PROVA - new Date()) / 86400000);
+    document.getElementById('dias-prova').textContent = dd > 0 ? dd + (dd === 1 ? ' dia' : ' dias') + ' até a prova' : 'prova realizada';
+    document.getElementById('btn-vencidos').textContent = 'Flashcards pendentes (' + todosCards().filter(vencido).length + ')';
+  }
+
+  // ---------- abas ----------
+  const ABAS = [['t-f0', 'aba-f0'], ['t-f1', 'aba-f1'], ['t-f2', 'aba-f2'], ['t-conq', 'aba-conq'], ['t-sync', 'aba-sync']];
+  function abrirAba(tid) {
+    ABAS.forEach(([t, a]) => { document.getElementById(t).setAttribute('aria-selected', String(t === tid)); document.getElementById(a).hidden = t !== tid; });
+    if (tid === 't-f0') renderF0(); if (tid === 't-f1') renderF1(); if (tid === 't-f2') renderF2(); if (tid === 't-conq') renderConq();
+  }
+  ABAS.forEach(([t]) => document.getElementById(t).addEventListener('click', () => abrirAba(t)));
+
+  // ---------- área de atividade ----------
+  const AT = document.getElementById('atividade');
+  let pararAtividade = null;
+  function abrirAtividade(titulo) {
+    if (pararAtividade) { pararAtividade(); pararAtividade = null; }
+    AT.hidden = false; AT.textContent = '';
+    AT.append(el('button', { type: 'button', class: 'fechar', onclick: fecharAtividade }, 'Fechar'), el('h2', {}, titulo));
+    const corpo = el('div'); AT.append(corpo);
+    AT.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return corpo;
+  }
+  function fecharAtividade() {
+    if (pararAtividade) { pararAtividade(); pararAtividade = null; }
+    AT.hidden = true; AT.textContent = ''; renderTudo();
+  }
+
+  // ---------- quiz ----------
+  function iniciarQuiz(p) {
+    if (!quizAberto(p)) { abrirAba('t-f0'); iniciarLicao(p, proxLicao(p)); return; }
+    const corpo = abrirAtividade('Quiz · Ponto ' + p + ' – ' + PT[p].titulo);
+    const qs = embaralha(D.quiz[p]).map((q) => ({ q: q[0], ops: embaralha([[q[1], true], [q[2], false], [q[3], false], [q[4], false]]), exp: q[5] }));
+    let i = 0, acertos = 0;
+    function mostrar() {
+      corpo.textContent = '';
+      const item = qs[i];
+      corpo.append(el('div', { class: 'progresso-q' }, 'Questão ' + (i + 1) + ' de ' + qs.length + ' · ' + acertos + ' acerto' + (acertos === 1 ? '' : 's')));
+      corpo.append(el('div', { class: 'pergunta', html: fmt(item.q) }));
+      const box = el('div', { class: 'opcoes' }); corpo.append(box);
+      const exp = el('div', { class: 'explic', hidden: true }); corpo.append(exp);
+      const prox = el('button', { type: 'button', class: 'pri', hidden: true, style: 'margin-top:12px' }, i + 1 < qs.length ? 'Próxima' : 'Ver resultado');
+      corpo.append(prox);
+      item.ops.forEach(([txt, certa]) => {
+        const b = el('button', { type: 'button', html: fmt(txt) });
+        b.addEventListener('click', () => {
+          box.querySelectorAll('button').forEach((x, k) => { x.disabled = true; if (item.ops[k][1]) x.classList.add('certa'); });
+          if (certa) { acertos++; exp.prepend(el('span', { class: 'ok' }, 'Certo. ')); } else { b.classList.add('errada'); exp.prepend(el('span', { class: 'err' }, 'Não foi dessa vez. ')); }
+          exp.append(el('span', { html: fmt(item.exp) })); exp.hidden = false; prox.hidden = false; prox.focus();
+        });
+        box.append(b);
+      });
+      prox.addEventListener('click', () => { i++; if (i < qs.length) mostrar(); else fim(); });
+    }
+    function fim() {
+      const pct = acertos / qs.length; const r = qz(p); const d = dia();
+      r.tent++; r.melhor = Math.max(r.melhor, pct);
+      let xp = acertos * 5;
+      const msgs = [];
+      if (pct >= 0.8) { if (!d.quiz.includes(p)) d.quiz.push(p); if (!r.passou) { r.passou = true; xp += 100; msgs.push('Fase 2 do ponto ' + p + ' liberada (+100 XP).'); } }
+      if (pct === 1 && !r.perfeito) { r.perfeito = true; xp += 50; msgs.push('Gabarito completo (+50 XP).'); }
+      salvar();
+      corpo.textContent = '';
+      corpo.append(el('p', { class: 'big' }, Math.round(pct * 100) + '%'));
+      corpo.append(el('p', {}, acertos + ' de ' + qs.length + ' acertos. ' + (pct >= 0.8 ? 'Passou.' : 'Para liberar a fase 2, faltaram ' + (Math.ceil(0.8 * qs.length) - acertos) + ' acerto(s). Releia o resumo e tente de novo.')));
+      msgs.forEach((m) => corpo.append(el('p', { class: 'ok' }, m)));
+      corpo.append(el('div', { class: 'toolbar' },
+        el('button', { type: 'button', class: 'pri', onclick: () => iniciarQuiz(p) }, 'Refazer o quiz'),
+        el('button', { type: 'button', onclick: () => iniciarCards([p]) }, 'Flashcards do ponto'),
+        el('a', { href: PT[p].resumo, target: '_blank', rel: 'noopener' }, 'Abrir o resumo-modelo')));
+      ganhar(xp, 'quiz do ponto ' + p);
+    }
+    mostrar();
+  }
+
+  // ---------- flashcards ----------
+  function iniciarCards(pts, soVencidos) {
+    let fila = (pts ? pts.flatMap(cardsDo) : todosCards());
+    const venc = fila.filter(vencido);
+    fila = soVencidos ? venc : (venc.length ? venc : fila);
+    fila = embaralha(fila).slice(0, 20);
+    const corpo = abrirAtividade('Flashcards' + (pts && pts.length === 1 ? ' · Ponto ' + pts[0] : soVencidos ? ' pendentes (novos e vencidos)' : ''));
+    if (!fila.length) { corpo.append(el('p', {}, 'Nenhum cartão pendente agora. Volte amanhã ou revise um ponto específico.')); return; }
+    let feitos = 0; const repetir = new Set();
+    function mostrar() {
+      corpo.textContent = '';
+      if (!fila.length) { corpo.append(el('p', {}, 'Sessão encerrada: ' + feitos + ' revisões.'), el('button', { type: 'button', onclick: fecharAtividade }, 'Fechar')); return; }
+      const c = fila[0];
+      corpo.append(el('div', { class: 'progresso-q' }, 'Ponto ' + c.p + ' · caixa ' + (caixa(c) || 'nova') + ' · restam ' + fila.length));
+      const verso = el('div', { class: 'verso', hidden: true, html: fmt(c.v) });
+      corpo.append(el('div', { class: 'flash' }, el('div', { class: 'frente', html: fmt(c.f) }), verso));
+      const mostrarBtn = el('button', { type: 'button', class: 'pri' }, 'Mostrar resposta');
+      const sabia = el('button', { type: 'button', class: 'pri', hidden: true }, 'Sabia');
+      const nao = el('button', { type: 'button', hidden: true }, 'Não sabia');
+      corpo.append(el('div', { class: 'toolbar' }, mostrarBtn, sabia, nao));
+      corpo.append(el('p', { class: 'note' }, 'Tente responder em voz alta ou no papel antes de virar o cartão.'));
+      mostrarBtn.addEventListener('click', () => { verso.hidden = false; mostrarBtn.hidden = true; sabia.hidden = false; nao.hidden = false; sabia.focus(); });
+      const registrar = (ok) => {
+        const s = estado.cards[c.id] || { cx: 0, prox: hoje(), vistos: 0 };
+        s.vistos++;
+        if (ok) { s.cx = Math.min(5, Math.max(1, s.cx) + (s.cx ? 1 : 0)); s.prox = somaDias(hoje(), INTERVALO[s.cx]); }
+        else { s.cx = 1; s.prox = hoje(); }
+        estado.cards[c.id] = s; dia().cards++; feitos++;
+        fila.shift();
+        if (!ok && !repetir.has(c.id)) { repetir.add(c.id); fila.push(c); }
+        ganhar(ok ? 5 : 2, ok ? 'cartão lembrado' : 'cartão revisado');
+        mostrar();
+      };
+      sabia.addEventListener('click', () => registrar(true));
+      nao.addEventListener('click', () => registrar(false));
+    }
+    mostrar();
+  }
+
+  // ---------- geradores de cálculo ----------
+  const SUP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+  const pot = (k) => k === 0 ? '1' : k === 1 ? 'n' : 'n' + String(k).split('').map((c) => SUP[c]).join('');
+  const mdc = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
+  function inverso(a, m) { // Euclides estendido, com passos
+    let [r0, r1, s0, s1] = [m, a, 0, 1]; const passos = [];
+    while (r1 !== 0) { const q = Math.floor(r0 / r1); passos.push(r0 + ' = ' + q + '·' + r1 + ' + ' + (r0 - q * r1)); [r0, r1] = [r1, r0 - q * r1]; [s0, s1] = [s1, s0 - q * s1]; }
+    return { inv: ((s0 % m) + m) % m, passos };
+  }
+  function expmod(b, e, m) { // quadrados repetidos, da esquerda para a direita, com passos
+    let r = 1; const passos = []; const bits = e.toString(2);
+    for (const bit of bits) { r = (r * r) % m; let t = 'bit ' + bit + ': r² = ' + r; if (bit === '1') { r = (r * b) % m; t += ', ×' + b + ' = ' + r; } passos.push(t); }
+    return { r, passos, bits };
+  }
+  const PRIMOS = [3, 5, 7, 11, 13, 17, 19, 23];
+  const GER = {
+    8: [
+      function mestre() {
+        let a, b, k, e; do { a = escolhe([1, 2, 3, 4, 7, 8, 9, 16]); b = escolhe([2, 3, 4]); k = escolhe([0, 1, 2, 3]); e = Math.log(a) / Math.log(b); } while (Math.abs(e - Math.round(e)) > 1e-9 && Math.abs(e - k) < 0.15);
+        const ei = Math.abs(e - Math.round(e)) < 1e-9 ? Math.round(e) : null;
+        const ne = ei !== null ? pot(ei) : 'n^{log_' + b + ' ' + a + '} ≈ n^{' + e.toFixed(2).replace('.', ',') + '}';
+        const fn = pot(k);
+        const neCurto = ei !== null ? pot(ei) : 'n^{' + e.toFixed(2).replace('.', ',') + '}';
+        const th = (x) => 'Θ(' + x + ')', thl = (x) => 'Θ(' + (x === '1' ? 'lg n' : x + ' lg n') + ')';
+        let caso, resp;
+        if (ei !== null && ei === k) { caso = 2; resp = thl(fn); }
+        else if (e > k) { caso = 1; resp = th(neCurto); }
+        else { caso = 3; resp = th(fn); }
+        const ops = new Set([th(neCurto), th(fn), thl(fn), thl(neCurto), th(pot(k + 1)), thl(pot(k + 1)), th(pot(k + 2))]);
+        ops.delete(resp);
+        const lista = embaralha([resp, ...embaralha([...ops]).slice(0, 3)]);
+        return { titulo: 'Teorema mestre', enun: 'Resolva T(n) = ' + (a === 1 ? '' : a) + 'T(n/' + b + ') + Θ(' + fn + ').', opcoes: lista, resp,
+          sol: 'a = ' + a + ', b = ' + b + ', n^{log_b a} = ' + ne + ' e f(n) = ' + fn + '.\n' + (caso === 2 ? 'São da mesma ordem: caso 2, multiplica-se por lg n.' : caso === 1 ? 'n^{log_b a} é polinomialmente maior: caso 1, dominam as folhas.' : 'f(n) é polinomialmente maior e vale a regularidade a·f(n/b) ≤ c·f(n): caso 3.') + '\nResposta: ' + resp + '.' };
+      },
+      function lacos() {
+        const n = rnd(5, 12); const v = escolhe([1, 2, 3]);
+        let cod, resp, sol;
+        if (v === 1) { cod = 'para i = 1 até ' + n + '\n  para j = i até ' + n + '\n    x = x + 1'; resp = n * (n + 1) / 2; sol = 'Para cada i, o laço interno roda n − i + 1 vezes: Σ (n − i + 1) = n(n+1)/2 = ' + resp + '. Custo Θ(n²).'; }
+        else if (v === 2) { cod = 'para i = 1 até ' + n + '\n  para j = 1 até i − 1\n    x = x + 1'; resp = n * (n - 1) / 2; sol = 'Para cada i, o laço interno roda i − 1 vezes: Σ (i − 1) = n(n−1)/2 = ' + resp + '. Custo Θ(n²).'; }
+        else { cod = 'para i = 1 até ' + n + '\n  para j = 1 até ' + n + '\n    para k = 1 até j\n      x = x + 1'; resp = n * n * (n + 1) / 2; sol = 'Para cada i (n vezes), Σ_j j = n(n+1)/2. Total n·n(n+1)/2 = ' + resp + '. Custo Θ(n³).'; }
+        return { titulo: 'Contagem de passos', enun: 'Quantas vezes a linha x = x + 1 é executada?', codigo: cod, resp: String(resp), sol };
+      },
+    ],
+    1: [
+      function mochila() {
+        const n = rnd(3, 4); const it = []; for (let i = 0; i < n; i++) it.push({ w: rnd(1, 4), v: 5 * rnd(2, 18) });
+        const W = rnd(4, 7);
+        const K = [Array(W + 1).fill(0)];
+        for (let i = 1; i <= n; i++) { K[i] = []; for (let c = 0; c <= W; c++) { K[i][c] = K[i - 1][c]; if (it[i - 1].w <= c) K[i][c] = Math.max(K[i][c], K[i - 1][c - it[i - 1].w] + it[i - 1].v); } }
+        const esc = []; let c = W; for (let i = n; i >= 1; i--) if (K[i][c] !== K[i - 1][c]) { esc.unshift(i); c -= it[i - 1].w; }
+        const ord = it.map((x, i) => ({ ...x, i: i + 1 })).sort((a, b) => b.v / b.w - a.v / a.w); let g = 0, cap = W; ord.forEach((x) => { if (x.w <= cap) { g += x.v; cap -= x.w; } });
+        const linhas = K.map((row, i) => (i === 0 ? 'item 0     ' : 'item ' + i + ' (' + it[i - 1].w + ',' + it[i - 1].v + ')').padEnd(14) + row.map((x) => String(x).padStart(4)).join(''));
+        return { titulo: 'Mochila 0/1', enun: 'Capacidade W = ' + W + '. Itens (peso, valor): ' + it.map((x, i) => (i + 1) + ': (' + x.w + ', ' + x.v + ')').join('; ') + '.\nQual é o maior valor possível?', resp: String(K[n][W]),
+          sol: 'K[i,c] = max(K[i−1,c], K[i−1,c−w_i] + v_i):\n' + ' '.repeat(14) + Array.from({ length: W + 1 }, (_, c) => String(c).padStart(4)).join('') + '\n' + linhas.join('\n') + '\nÓtimo ' + K[n][W] + ' com os itens {' + esc.join(', ') + '}. O guloso por valor/peso daria ' + g + '.' };
+      },
+    ],
+    4: [
+      function lomuto() {
+        let A; do { A = embaralha(Array.from({ length: 20 }, (_, i) => i + 1)).slice(0, 7); } while (A[6] === Math.max(...A) || A[6] === Math.min(...A));
+        const B = A.slice(); const x = B[6]; let i = -1; const passos = [];
+        for (let j = 0; j < 6; j++) if (B[j] <= x) { i++; [B[i], B[j]] = [B[j], B[i]]; passos.push('j = ' + (j + 1) + ': ' + B[i] + ' ≤ ' + x + ', i = ' + (i + 1) + ' → [' + B.join(', ') + ']'); }
+        [B[i + 1], B[6]] = [B[6], B[i + 1]];
+        return { titulo: 'Particionamento de Lomuto', enun: 'Particione [' + A.join(', ') + '] com o último elemento (' + x + ') como pivô, pelo método de Lomuto. Escreva o vetor resultante, separado por vírgulas.', resp: B.join(','),
+          sol: (passos.length ? passos.join('\n') : 'Nenhum elemento ≤ ' + x + '.') + '\nPor fim, o pivô troca com a posição ' + (i + 2) + ': [' + B.join(', ') + ']. O pivô fica na posição ' + (i + 2) + '.' };
+      },
+      function inversoes() {
+        const A = embaralha(Array.from({ length: 15 }, (_, i) => i + 1)).slice(0, 6);
+        const inv = []; for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) if (A[i] > A[j]) inv.push('(' + A[i] + ',' + A[j] + ')');
+        return { titulo: 'Ordenação por inserção', enun: 'Quantos deslocamentos a ordenação por inserção faz para ordenar [' + A.join(', ') + ']?', resp: String(inv.length),
+          sol: 'Cada deslocamento desfaz exatamente uma inversão (par fora de ordem). Inversões: ' + (inv.join(' ') || 'nenhuma') + ' → ' + inv.length + '.' };
+      },
+    ],
+    5: [
+      function rsaD() {
+        let p, q, f, e; do { p = escolhe(PRIMOS); q = escolhe(PRIMOS); f = (p - 1) * (q - 1); e = escolhe([3, 5, 7, 11, 13, 17]); } while (p === q || e >= f || mdc(e, f) !== 1);
+        const r = inverso(e, f);
+        return { titulo: 'RSA: chave privada', enun: 'RSA com p = ' + p + ', q = ' + q + ' e e = ' + e + '. Calcule d.', resp: String(r.inv),
+          sol: 'n = ' + p * q + ', φ(n) = ' + (p - 1) + '·' + (q - 1) + ' = ' + f + '.\nEuclides estendido:\n' + r.passos.join('\n') + '\nd = ' + r.inv + '; confere: ' + e + '·' + r.inv + ' = ' + e * r.inv + ' ≡ 1 (mod ' + f + ').' };
+      },
+      function rsaC() {
+        let p, q, f, e, n, M, x;
+        do {
+          do { p = escolhe(PRIMOS); q = escolhe(PRIMOS); f = (p - 1) * (q - 1); e = escolhe([3, 5, 7]); } while (p === q || e >= f || mdc(e, f) !== 1);
+          n = p * q; M = rnd(2, n - 1); x = expmod(M, e, n);
+        } while (mdc(M, n) !== 1 || x.r === M);
+        return { titulo: 'RSA: cifrar', enun: 'Chave pública (e, n) = (' + e + ', ' + n + '). Cifre M = ' + M + ', isto é, calcule C = M^{e} mod n.', resp: String(x.r),
+          sol: 'e = ' + e + ' = ' + x.bits + ' em binário. Quadrados repetidos (começando com r = 1):\n' + x.passos.join('\n') + '\nC = ' + x.r + '.' };
+      },
+      function dh() {
+        const p = escolhe([23, 29, 31, 37, 41, 43, 47]); const g = rnd(2, 6); const a = rnd(3, 15); const b = rnd(3, 15);
+        const A = expmod(g, a, p).r, B = expmod(g, b, p).r, K = expmod(B, a, p).r;
+        return { titulo: 'Diffie-Hellman', enun: 'p = ' + p + ', g = ' + g + '. Alice escolhe a = ' + a + ' e Bob escolhe b = ' + b + '. Qual é a chave comum K?', resp: String(K),
+          sol: 'A = g^{a} mod p = ' + A + '; B = g^{b} mod p = ' + B + '.\nK = B^{a} mod p = ' + K + ' = A^{b} mod p = ' + expmod(A, b, p).r + '.' };
+      },
+      function exp() {
+        const m = rnd(20, 99), b = rnd(2, m - 1), e = rnd(10, 60); const x = expmod(b, e, m);
+        return { titulo: 'Exponenciação modular', enun: 'Calcule ' + b + '^{' + e + '} mod ' + m + ' por quadrados repetidos.', resp: String(x.r),
+          sol: e + ' = ' + x.bits + ' em binário. Começando com r = 1:\n' + x.passos.join('\n') + '\nResultado: ' + x.r + ' (' + x.bits.length + ' quadrados e ' + (x.bits.split('1').length - 1) + ' multiplicações, contra ' + (e - 1) + ' do método ingênuo).' };
+      },
+    ],
+    9: [
+      function tempo() {
+        const casos = [['n²', (n) => n * n, [1e5, 1e6, 1e7]], ['n³', (n) => n ** 3, [1e3, 1e4, 1e5]], ['2ⁿ', (n) => 2 ** n, [30, 40, 50, 60]], ['n!', (n) => { let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; }, [12, 15, 18, 20]]];
+        const [nome, f, ns] = escolhe(casos); const n = escolhe(ns);
+        const tf = (s) => s < 1e-3 ? (s * 1e6).toFixed(1) + ' µs' : s < 1 ? (s * 1e3).toFixed(1) + ' ms' : s < 120 ? s.toFixed(1) + ' s' : s < 7200 ? (s / 60).toFixed(1) + ' min' : s < 172800 ? (s / 3600).toFixed(1) + ' h' : s < 3.15e7 * 2 ? (s / 86400).toFixed(1) + ' dias' : s / 3.15e7 < 1e4 ? Math.round(s / 3.15e7) + ' anos' : (s / 3.15e7).toExponential(1).replace('e+', ' × 10^') + ' anos';
+        const tfmt = (s) => '≈ ' + tf(s).replace('.', ',').replace(/10\^(\d+)/, (m, k) => '10^{' + k + '}');
+        const sc = f(n) / 1e9, resp = tfmt(sc);
+        const cands = []; casos.forEach(([, g, ms]) => ms.forEach((m) => cands.push(g(m) / 1e9)));
+        const outros = new Set();
+        embaralha(cands).forEach((s) => { if (outros.size < 3 && Math.abs(Math.log10(s / sc)) >= 0.7 && [...outros].every((o) => Math.abs(Math.log10(s / o[1])) >= 0.7)) outros.add([tfmt(s), s]); });
+        const outrosTxt = [...outros].map((o) => o[0]).filter((x) => x !== resp);
+        const fmtN = n >= 1000 ? '10^{' + Math.round(Math.log10(n)) + '}' : String(n);
+        return { titulo: 'Ordens de crescimento', enun: 'A 10^{9} operações por segundo, quanto tempo leva um algoritmo que executa ' + nome + ' operações com n = ' + fmtN + '?', opcoes: embaralha([resp, ...outrosTxt.slice(0, 3)]), resp,
+          sol: nome + ' com n = ' + fmtN + ' dá ' + f(n).toExponential(2).replace('.', ',').replace(/e\+(\d+)/, ' × 10^{$1}') + ' operações; dividindo por 10^{9}: ' + resp + '.' };
+      },
+      function cobertura() {
+        const n = rnd(6, 20), k = rnd(3, n - 2);
+        return { titulo: 'Clique e cobertura de vértices', enun: 'Um grafo G com ' + n + ' vértices tem um clique de tamanho ' + k + '. De que tamanho é a cobertura de vértices correspondente no grafo complementar?', resp: String(n - k),
+          sol: 'G tem clique de tamanho k ⟺ o complemento tem cobertura de tamanho |V| − k = ' + n + ' − ' + k + ' = ' + (n - k) + '. É a redução usada para mostrar que Cobertura de vértices é NP-completa.' };
+      },
+    ],
+    3: [
+      function dijkstra() {
+        const V = ['s', 'a', 'b', 'c', 'd']; const E = new Map();
+        const add = (u, v, w) => { if (u !== v && !E.has(u + v)) E.set(u + v, [u, v, w]); };
+        for (let i = 0; i < 4; i++) add(V[i], V[i + 1], rnd(4, 9));
+        while (E.size < 9) add(escolhe(V), escolhe(V.slice(1)), rnd(1, 9));
+        const dist = { s: 0 }, ant = {}, feito = new Set(), ordem = [];
+        while (feito.size < 5) {
+          const u = V.filter((x) => !feito.has(x) && dist[x] !== undefined).sort((x, y) => dist[x] - dist[y])[0]; if (!u) break;
+          feito.add(u); ordem.push(u + ' (' + dist[u] + ')');
+          [...E.values()].filter(([x]) => x === u).forEach(([, v, w]) => { if (dist[v] === undefined || dist[u] + w < dist[v]) { dist[v] = dist[u] + w; ant[v] = u; } });
+        }
+        const alvo = escolhe(['c', 'd', 'b']); const cam = []; let x = alvo; while (x) { cam.unshift(x); x = ant[x]; }
+        return { titulo: 'Dijkstra', enun: 'Grafo orientado com arestas (peso): ' + [...E.values()].map(([u, v, w]) => u + '→' + v + ' (' + w + ')').join(', ') + '.\nQual é a distância mínima de s até ' + alvo + '?', resp: String(dist[alvo]),
+          sol: 'Ordem de extração (distância): ' + ordem.join(', ') + '.\nCaminho mínimo até ' + alvo + ': ' + cam.join(' → ') + ', custo ' + dist[alvo] + '.' };
+      },
+    ],
+    7: [
+      function paginas() {
+        const ref = Array.from({ length: 12 }, () => rnd(0, 5)); const alg = escolhe(['FIFO', 'LRU', 'ótimo']);
+        let q = [], faltas = 0; const linhas = [];
+        ref.forEach((r, i) => {
+          let f = false;
+          if (q.includes(r)) { if (alg === 'LRU') { q = q.filter((x) => x !== r); q.push(r); } }
+          else {
+            f = true; faltas++;
+            if (q.length === 3) {
+              let v;
+              if (alg === 'ótimo') { const fut = ref.slice(i + 1); v = q.slice().sort((x, y) => (fut.indexOf(y) < 0 ? 99 : fut.indexOf(y)) - (fut.indexOf(x) < 0 ? 99 : fut.indexOf(x)))[0]; }
+              else v = q[0];
+              q = q.filter((x) => x !== v);
+            }
+            q.push(r);
+          }
+          linhas.push(String(r).padStart(2) + ' → [' + q.join(' ') + ']' + (f ? '  falta' : ''));
+        });
+        return { titulo: 'Substituição de páginas', enun: 'Referências: ' + ref.join(', ') + '. Com 3 quadros inicialmente vazios e o algoritmo ' + alg + ', quantas faltas de página ocorrem?', resp: String(faltas),
+          sol: (alg === 'LRU' ? 'Quadros listados do menos para o mais recentemente usado:\n' : alg === 'FIFO' ? 'Quadros em ordem de chegada:\n' : 'O ótimo retira a página usada mais tarde no futuro:\n') + linhas.join('\n') + '\nTotal: ' + faltas + ' faltas.' };
+      },
+      function endereco() {
+        const tam = escolhe([1024, 2048, 4096]); const tab = embaralha(Array.from({ length: 16 }, (_, i) => i)).slice(0, 8);
+        const L = rnd(0, 8 * tam - 1); const p = Math.floor(L / tam), d = L % tam; const F = tab[p] * tam + d;
+        return { titulo: 'Tradução de endereço', enun: 'Páginas de ' + tam / 1024 + ' KB (' + mil(tam) + ' bytes). Tabela de páginas (página → quadro): ' + tab.map((f, i) => i + '→' + f).join(', ') + '.\nQual é o endereço físico do endereço lógico ' + mil(L) + '?', resp: String(F),
+          sol: 'p = ⌊' + L + '/' + tam + '⌋ = ' + p + ', d = ' + L + ' mod ' + tam + ' = ' + d + '.\nQuadro ' + tab[p] + ': físico = ' + tab[p] + '·' + tam + ' + ' + d + ' = ' + mil(F) + '.' };
+      },
+    ],
+    6: [
+      function hash() {
+        const m = escolhe([7, 11, 13]); const ks = []; while (ks.length < 6) { const k = rnd(1, 99); if (!ks.includes(k)) ks.push(k); }
+        const T = Array(m).fill(null); const passos = []; let ult, sond;
+        ks.forEach((k) => { let i = 0; while (T[(k + i) % m] !== null) i++; T[(k + i) % m] = k; ult = (k + i) % m; sond = i + 1; passos.push(k + ' mod ' + m + ' = ' + (k % m) + (i ? ' → ocupada(s), vai para ' + ult : ' → livre') + ' (' + (i + 1) + (i ? ' sondagens' : ' sondagem') + ')'); });
+        const k = ks[5];
+        return { titulo: 'Hash com sondagem linear', enun: 'Tabela com m = ' + m + ' posições (0 a ' + (m - 1) + '), h(k) = k mod ' + m + ', sondagem linear. Inserindo ' + ks.join(', ') + ' nessa ordem, em que posição fica o ' + k + '?', resp: String(ult),
+          sol: passos.join('\n') + '\nTabela final: [' + T.map((x) => x === null ? '–' : x).join(', ') + '].' };
+      },
+    ],
+    2: [
+      function posfixa() {
+        let itens = Array.from({ length: 4 }, () => { const v = rnd(1, 9); return { v, inf: String(v), pos: String(v), prec: 9 }; });
+        while (itens.length > 1) {
+          const i = rnd(0, itens.length - 2); const a = itens[i], b = itens[i + 1];
+          const op = escolhe(['+', '−', '×']);
+          const v = op === '+' ? a.v + b.v : op === '−' ? a.v - b.v : a.v * b.v;
+          const pr = op === '×' ? 2 : 1;
+          const ia = a.prec < pr ? '(' + a.inf + ')' : a.inf; const ib = b.prec <= pr && b.prec < 9 ? '(' + b.inf + ')' : b.inf;
+          itens.splice(i, 2, { v, inf: ia + ' ' + op + ' ' + ib, pos: a.pos + ' ' + b.pos + ' ' + op, prec: pr });
+        }
+        const e = itens[0]; const pilha = []; const passos = [];
+        e.pos.split(' ').forEach((t) => { if (/^\d+$/.test(t)) pilha.push(+t); else { const y = pilha.pop(), x = pilha.pop(); pilha.push(t === '+' ? x + y : t === '−' ? x - y : x * y); } passos.push(t.padEnd(2) + ' → [' + pilha.join(', ') + ']'); });
+        return { titulo: 'Avaliação pós-fixa', enun: 'Avalie com uma pilha a expressão pós-fixa  ' + e.pos, resp: String(e.v),
+          sol: 'Equivale a ' + e.inf + '.\n' + passos.join('\n') + '\nResultado: ' + e.v + '.' };
+      },
+      function filaCircular() {
+        const n = escolhe([5, 6]); let ini = 0, fim = 0, cont = 0; const ops = []; const passos = []; let letra = 0;
+        while (ops.length < 9) {
+          const podeE = (fim + 1) % n !== ini, podeD = ini !== fim;
+          const op = podeE && (!podeD || Math.random() < 0.6) ? 'E' : 'D';
+          if (op === 'E') { const L = String.fromCharCode(65 + letra++); ops.push('enfileira ' + L); fim = (fim + 1) % n; } else { ops.push('desenfileira'); ini = (ini + 1) % n; }
+          passos.push(ops[ops.length - 1].padEnd(13) + ' → início = ' + ini + ', fim = ' + fim);
+        }
+        return { titulo: 'Fila circular', enun: 'Fila circular em vetor de ' + n + ' posições (0 a ' + (n - 1) + '), que deixa uma posição vazia; início = fim = 0 no começo, e fim aponta para a próxima posição livre. Operações: ' + ops.join(', ') + '.\nQuais são os valores finais de início e fim? Responda no formato início,fim.', resp: ini + ',' + fim,
+          sol: passos.join('\n') + '\nCada operação avança um índice módulo ' + n + '.' };
+      },
+    ],
+    10: [
+      function codigo() {
+        const casos = [
+          ['class A { String m() { return "A"; } }\nclass B extends A { String m() { return "B"; } }\n\nA x = new B();\nSystem.out.println(x.m());', 'B', ['A', 'AB', 'Erro de compilação'], 'Sobrescrita com ligação dinâmica: executa a versão da classe real do objeto (B).'],
+          ['class P {\n  void f(Object o) { System.out.println("obj"); }\n  void f(String s) { System.out.println("str"); }\n}\nObject o = "oi";\nnew P().f(o);', 'obj', ['str', 'obj str', 'Erro de compilação'], 'Sobrecarga é escolhida em compilação pelo tipo estático do argumento, que é Object.'],
+          ['class A { String m() { return "A"; } }\nclass B extends A { String m() { return "B" + super.m(); } }\nclass C extends B { String m() { return "C" + super.m(); } }\n\nA x = new C();\nSystem.out.println(x.m());', 'CBA', ['C', 'ABC', 'A'], 'Ligação dinâmica chama C.m(); cada super.m() sobe um nível: "C" + "B" + "A".'],
+          ['class A { static String s() { return "A"; } }\nclass B extends A { static String s() { return "B"; } }\n\nA x = new B();\nSystem.out.println(x.s());', 'A', ['B', 'AB', 'Erro de execução'], 'Métodos estáticos não são sobrescritos, são ocultados: a chamada é resolvida pelo tipo estático A.'],
+          ['class A { String n = "A"; }\nclass B extends A { String n = "B"; }\n\nA x = new B();\nSystem.out.println(x.n);', 'A', ['B', 'AB', 'null'], 'Atributos não têm ligação dinâmica: o acesso usa o tipo estático A.'],
+          ['class A { A() { System.out.print("A"); } }\nclass B extends A { B() { System.out.print("B"); } }\n\nnew B();', 'AB', ['B', 'BA', 'A'], 'O construtor da subclasse chama primeiro, implicitamente, o da superclasse (super()).'],
+        ];
+        const [cod, resp, err, exp] = escolhe(casos);
+        return { titulo: 'O que o código imprime?', enun: 'Em Java, o que é impresso?', codigo: cod, opcoes: embaralha([resp, ...err]), resp, sol: exp };
+      },
+    ],
+  };
+  if (/[?&]teste=1/.test(location.search)) window.__GER = GER;
+  const norm = (s) => String(s).toLowerCase().replace(/−/g, '-').replace(/[\s.\[\]()]/g, '').replace(/≈/g, '');
+
+  function iniciarCalc(p) {
+    const pts = p ? [p] : Object.keys(GER).map(Number);
+    const corpo = abrirAtividade(p ? 'Cálculos · Ponto ' + p + ' – ' + PT[p].titulo : 'Cálculo aleatório');
+    function novo() {
+      const pp = escolhe(pts); const g = escolhe(GER[pp])(); let respondido = false;
+      corpo.textContent = '';
+      corpo.append(el('div', { class: 'progresso-q' }, 'Ponto ' + pp + ' · ' + g.titulo + ' · 15 XP se acertar'));
+      corpo.append(el('div', { class: 'enun', html: fmt(g.enun) }));
+      if (g.codigo) corpo.append(el('pre', { class: 'mono' }, g.codigo));
+      const fb = el('div', { 'aria-live': 'polite' }); const sol = el('div', { class: 'solucao', hidden: true, html: fmt(g.sol) });
+      const outro = el('button', { type: 'button', class: 'pri', hidden: true, onclick: novo }, 'Outro exercício');
+      const concluir = (ok, resposta) => {
+        if (respondido) return; respondido = true;
+        estado.calc.tent++;
+        if (ok) { estado.calc.certos++; const d = dia(); d.calc[pp] = (d.calc[pp] || 0) + 1; }
+        salvar();
+        fb.append(ok ? el('p', { class: 'ok' }, 'Certo!') : el('p', { class: 'err', html: 'Resposta esperada: ' + fmt(g.resp) + (resposta ? ' (você respondeu ' + esc(resposta) + ')' : '') }));
+        sol.hidden = false; outro.hidden = false; outro.focus();
+        ganhar(ok ? 15 : 3, ok ? 'cálculo certo' : 'cálculo tentado');
+      };
+      if (g.opcoes) {
+        const box = el('div', { class: 'opcoes' });
+        g.opcoes.forEach((o) => { const b = el('button', { type: 'button', html: fmt(o) }); b.addEventListener('click', () => { box.querySelectorAll('button').forEach((x, k) => { x.disabled = true; if (g.opcoes[k] === g.resp) x.classList.add('certa'); }); if (o !== g.resp) b.classList.add('errada'); concluir(o === g.resp); }); box.append(b); });
+        corpo.append(box);
+      } else {
+        const inp = el('input', { type: 'text', class: 'resp', 'aria-label': 'Sua resposta', autocomplete: 'off', inputmode: /^-?\d+$/.test(g.resp) ? 'numeric' : 'text' });
+        const ver = el('button', { type: 'button', class: 'pri' }, 'Verificar');
+        const ver2 = el('button', { type: 'button' }, 'Ver solução');
+        const checar = () => { if (!inp.value.trim()) { inp.focus(); return; } concluir(norm(inp.value) === norm(g.resp), inp.value.trim()); inp.disabled = true; ver.disabled = true; ver2.disabled = true; };
+        ver.addEventListener('click', checar); inp.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') checar(); });
+        ver2.addEventListener('click', () => { concluir(false, ''); inp.disabled = true; ver.disabled = true; ver2.disabled = true; });
+        corpo.append(el('div', { class: 'toolbar', style: 'margin-top:8px' }, inp, ver, ver2));
+        setTimeout(() => inp.focus(), 50);
+      }
+      corpo.append(fb, sol, el('div', { class: 'toolbar', style: 'margin-top:12px' }, outro));
+    }
+    novo();
+  }
+
+  // ---------- fase 2: cronômetro ----------
+  function cronometro(segundos, aoFim) {
+    const vis = el('div', { class: 'relogio', role: 'timer', 'aria-live': 'off' }, '');
+    let resta = segundos, ultimo = Date.now(), rodando = true, id = null;
+    const fmtT = (s) => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60; return (h ? h + ':' + pad(m) : m) + ':' + pad(ss); };
+    const tick = () => { const now = Date.now(); if (rodando) resta -= (now - ultimo) / 1000; ultimo = now; vis.textContent = fmtT(resta); if (resta <= 0) { parar(); aoFim && aoFim(); } };
+    const parar = () => { if (id) clearInterval(id); id = null; };
+    id = setInterval(tick, 250); tick();
+    const pausa = el('button', { type: 'button' }, 'Pausar');
+    pausa.addEventListener('click', () => { rodando = !rodando; ultimo = Date.now(); pausa.textContent = rodando ? 'Pausar' : 'Continuar'; });
+    return { vis, pausa, parar, usado: () => segundos - Math.max(0, resta) };
+  }
+
+  function iniciarEsqueleto(p) {
+    const corpo = abrirAtividade('Esqueleto de memória · Ponto ' + p);
+    corpo.append(el('p', { class: 'pergunta' }, 'Ponto ' + p + ' – ' + PT[p].titulo));
+    corpo.append(el('p', {}, 'Sem consultar nada, escreva à mão o roteiro da sua resposta: de 8 a 10 itens, na ordem em que você os desenvolveria, com as fórmulas, os nomes e o exemplo que usaria. Quando terminar ou o tempo acabar, confira com os balizadores previstos.'));
+    const fim = () => conferir();
+    const c = cronometro(600, fim); pararAtividade = c.parar;
+    corpo.append(c.vis, el('div', { class: 'toolbar' }, c.pausa, el('button', { type: 'button', class: 'pri', onclick: fim }, 'Terminei')));
+    let conferido = false;
+    function conferir() {
+      if (conferido) return; conferido = true; c.parar(); pararAtividade = null;
+      corpo.textContent = '';
+      corpo.append(el('p', {}, 'Marque os balizadores previstos que aparecem no seu esqueleto (mesmo com outro nome):'));
+      const box = el('div', { class: 'checks' });
+      PT[p].baliz.forEach((b, i) => box.append(el('label', {}, el('input', { type: 'checkbox', value: i }), el('span', {}, (i + 1) + '. ' + b))));
+      corpo.append(box);
+      corpo.append(el('div', { class: 'toolbar', style: 'margin-top:12px' }, el('button', { type: 'button', class: 'pri', onclick: () => {
+        const n = box.querySelectorAll('input:checked').length;
+        (estado.esq[p] = estado.esq[p] || []).push({ data: hoje(), cobertos: n }); dia().esq.push(p); salvar();
+        corpo.textContent = '';
+        corpo.append(el('p', {}, 'Você cobriu ' + n + ' de ' + PT[p].baliz.length + ' balizadores.' + (n >= 8 ? ' Roteiro pronto para a prova.' : ' Releia os itens que faltaram no resumo e repita amanhã.')),
+          el('div', { class: 'toolbar' }, el('a', { href: PT[p].resumo, target: '_blank', rel: 'noopener' }, 'Abrir o resumo-modelo'), el('button', { type: 'button', onclick: fecharAtividade }, 'Fechar')));
+        ganhar(20 + 5 * n, 'esqueleto do ponto ' + p);
+      } }, 'Registrar')));
+    }
+  }
+
+  const ESTRUTURA = ['Introdução com definição e motivação', 'Um tópico para cada termo do enunciado', 'Pelo menos um exemplo resolvido passo a passo', 'Quadro comparativo ou de complexidade', 'Aplicações', 'Conclusão', 'Citações no texto (AUTOR, ano)', 'Lista de referências em ABNT'];
+
+  function iniciarRedacao(p, modo) {
+    const completa = modo === 'completa';
+    const corpo = abrirAtividade('Redação ' + (completa ? 'completa' : 'sprint') + ' · Ponto ' + p);
+    corpo.append(el('p', { class: 'pergunta' }, 'Ponto ' + p + ' – ' + PT[p].titulo));
+    const guia = el('p', {}, completa
+      ? 'Como na prova: 30 minutos para consultar material impresso e montar o esqueleto, depois 4 horas para escrever à mão, até 10 páginas. Os balizadores só aparecem no fim.'
+      : 'Escreva à mão durante 60 minutos: introdução, os primeiros tópicos e o exemplo resolvido. Os balizadores só aparecem no fim.');
+    corpo.append(guia);
+    const fase = el('div', { class: 'mid' }, completa ? 'Consulta (30 min)' : 'Escrita (60 min)');
+    let total = 0; const inicio = Date.now(); let c;
+    const caixa = el('div');
+    const fimBtn = el('button', { type: 'button', class: 'pri' }, 'Terminei');
+    const pularBtn = el('button', { type: 'button', hidden: !completa }, 'Encerrar consulta e começar a escrever');
+    corpo.append(fase, caixa, el('div', { class: 'toolbar' }, pularBtn, fimBtn));
+    function escrita() {
+      if (c) { c.parar(); }
+      pularBtn.hidden = true; fase.textContent = 'Escrita (' + (completa ? '4 h' : '60 min') + ')';
+      c = cronometro(completa ? 14400 : 3600, avaliar); pararAtividade = c.parar;
+      caixa.textContent = ''; caixa.append(c.vis, el('div', { class: 'toolbar' }, c.pausa));
+    }
+    if (completa) { c = cronometro(1800, escrita); pararAtividade = c.parar; caixa.append(c.vis, el('div', { class: 'toolbar' }, c.pausa)); pularBtn.addEventListener('click', escrita); }
+    else escrita();
+    fimBtn.addEventListener('click', avaliar);
+    let avaliado = false;
+    function avaliar() {
+      if (avaliado) return; avaliado = true; if (c) c.parar(); pararAtividade = null;
+      const min = Math.max(1, Math.round((Date.now() - inicio) / 60000));
+      corpo.textContent = '';
+      corpo.append(el('p', {}, 'Tempo total: ' + min + ' min. Releia sua folha e marque, com honestidade, o que está nela.'));
+      const b1 = el('div', { class: 'checks' }); PT[p].baliz.forEach((b, i) => b1.append(el('label', {}, el('input', { type: 'checkbox', value: i }), el('span', {}, (i + 1) + '. ' + b))));
+      const b2 = el('div', { class: 'checks' }); ESTRUTURA.forEach((b, i) => b2.append(el('label', {}, el('input', { type: 'checkbox', value: i }), el('span', {}, b))));
+      const pag = el('input', { type: 'number', min: 0, max: 10, step: 0.5, value: completa ? 8 : 3, style: 'width:6em', 'aria-label': 'Páginas escritas' });
+      corpo.append(el('div', { class: 'cols2' }, el('div', {}, el('h3', {}, 'Balizadores previstos que você cobriu'), b1), el('div', {}, el('h3', {}, 'Estrutura da resposta'), b2, el('p', {}, el('label', {}, 'Páginas escritas: ', pag)))));
+      corpo.append(el('div', { class: 'toolbar', style: 'margin-top:12px' }, el('button', { type: 'button', class: 'pri', onclick: () => {
+        const cob = [...b1.querySelectorAll('input:checked')].map((x) => +x.value);
+        const est = [...b2.querySelectorAll('input:checked')].map((x) => +x.value);
+        const r = { id: Date.now().toString(36), p, modo, data: hoje(), min, cobertos: cob, estrutura: est, paginas: +pag.value || 0, nota: null };
+        estado.red.push(r); dia().red.push({ p, modo }); salvar();
+        ganhar((completa ? 250 : 80) + 8 * cob.length + 5 * est.length, 'redação do ponto ' + p);
+        mostrarCorrecao(r);
+      } }, 'Registrar e gerar o texto para correção')));
+    }
+  }
+
+  function textoCorrecao(r) {
+    const p = r.p, falt = PT[p].baliz.map((b, i) => [b, i]).filter(([, i]) => !r.cobertos.includes(i)).map(([b]) => b);
+    return [
+      'Você é membro da banca da prova escrita do concurso para professor da UFPel (Edital 28/2026), área de Ciência da Computação. Corrija a minha prova manuscrita, que está nas fotos anexas.',
+      '',
+      'Ponto: ' + p + ' – ' + PT[p].titulo,
+      'Modo: ' + (r.modo === 'completa' ? 'simulado completo (30 min de consulta + 4 h de escrita, até 10 páginas)' : 'sprint de 60 minutos (resposta parcial)') + '. Tempo usado: ' + r.min + ' min. Páginas: ' + r.paginas + '.',
+      '',
+      'Critérios do edital (item 6.15.8):',
+      ...D.criterios.map((c) => '- ' + c),
+      '',
+      'Tópicos balizadores previstos para este ponto (não oficiais):',
+      ...PT[p].baliz.map((b, i) => (i + 1) + '. ' + b),
+      '',
+      'Na minha autoavaliação, achei que cobri ' + r.cobertos.length + ' de ' + PT[p].baliz.length + ' balizadores' + (falt.length ? '; ficaram de fora: ' + falt.join('; ') + '.' : '.'),
+      '',
+      'Devolva:',
+      '1. A transcrição dos trechos que estiverem ilegíveis ou duvidosos, para eu conferir.',
+      '2. Para cada balizador: coberto, parcial ou ausente, com um comentário curto.',
+      '3. Erros conceituais ou de notação, com a correção.',
+      '4. Uma nota de 0 a 10 para cada critério (conteúdo, forma, normas técnicas) e uma nota final de 0 a 10.',
+      '5. As três mudanças que mais aumentariam a minha nota.',
+      r.modo === 'completa' ? '' : 'Como é um sprint, avalie o que foi escrito e diga o que faltaria para a resposta completa.',
+    ].join('\n').trim();
+  }
+
+  function mostrarCorrecao(r) {
+    const corpo = abrirAtividade('Correção pelo Claude · Ponto ' + r.p);
+    const txt = textoCorrecao(r);
+    corpo.append(el('p', {}, 'Fotografe as páginas, abra uma conversa com o Claude, cole o texto abaixo e anexe as fotos. Depois registre aqui a nota final que ele der.'));
+    const ta = el('textarea', { readonly: true, 'aria-label': 'Texto para correção' }); ta.value = txt;
+    const msg = el('span', { class: 'note', style: 'margin:0' });
+    corpo.append(ta, el('div', { class: 'toolbar', style: 'margin-top:8px' }, el('button', { type: 'button', class: 'pri', onclick: async () => {
+      let ok = false; try { await navigator.clipboard.writeText(txt); ok = true; } catch (e) {} if (!ok) { ta.select(); try { ok = document.execCommand('copy'); } catch (e) {} }
+      msg.textContent = ok ? 'Texto copiado.' : 'Selecione o texto e copie manualmente.';
+    } }, 'Copiar texto'), el('a', { href: 'https://claude.ai/new', target: '_blank', rel: 'noopener' }, 'Abrir uma conversa no Claude'), msg));
+    corpo.append(formNota(r));
+  }
+
+  function formNota(r) {
+    const inp = el('input', { type: 'number', min: 0, max: 10, step: 0.1, style: 'width:6em', 'aria-label': 'Nota final do Claude', value: r.nota === null ? '' : r.nota });
+    const msg = el('span', { class: 'note', style: 'margin:0' });
+    const btn = el('button', { type: 'button', class: 'pri' }, r.nota === null ? 'Registrar nota' : 'Atualizar nota');
+    btn.addEventListener('click', () => {
+      const v = parseFloat(String(inp.value).replace(',', '.')); if (isNaN(v) || v < 0 || v > 10) { msg.textContent = 'Use um número de 0 a 10.'; return; }
+      const primeira = r.nota === null; r.nota = Math.round(v * 10) / 10; salvar();
+      msg.textContent = 'Nota registrada.'; btn.textContent = 'Atualizar nota';
+      if (primeira) ganhar(Math.round(r.nota * 20), 'nota da correção'); else { verificarConquistas(); renderTudo(); }
+    });
+    return el('div', { class: 'toolbar', style: 'margin-top:12px' }, el('label', {}, 'Nota final dada pelo Claude: ', inp), btn, msg);
+  }
+
+  // ---------- fase 0: trilhas ----------
+  const proxLicao = (p) => { const tr = trilha(p) || []; const i = tr.findIndex((_, k) => !licFeita(p, k)); return i < 0 ? 0 : i; };
+  function renderF0() {
+    const g = document.getElementById('grade-f0'); g.textContent = '';
+    PONTOS.forEach((pt) => {
+      const p = pt.p, tr = trilha(p);
+      if (!tr) { g.append(el('div', { class: 'card pt trancado' }, el('div', { class: 'cab' }, el('span', { class: 'num' }, 'Ponto ' + p + ' · ' + pt.crono), el('span', { class: 'selo tr' }, 'em preparação')), el('div', { class: 'tit' }, pt.titulo), el('div', { class: 'stats' }, 'A trilha deste ponto ainda está sendo escrita.'))); return; }
+      const feitas = licoesFeitas(p), ok = feitas === tr.length;
+      const ul = el('ul', { class: 'licoes' });
+      tr.forEach((l, i) => ul.append(el('li', { class: licFeita(p, i) ? 'feita' : '' }, el('button', { type: 'button', onclick: () => iniciarLicao(p, i) }, el('span', { class: 'ck', 'aria-hidden': 'true' }, licFeita(p, i) ? '✓' : String(i + 1)), el('span', {}, l.t), el('span', { class: 'nv' }, l.nv)))));
+      g.append(el('div', { class: 'card pt' },
+        el('div', { class: 'cab' }, el('span', { class: 'num' }, 'Ponto ' + p + ' · ' + pt.crono), ok ? el('span', { class: 'selo' }, 'trilha concluída') : el('span', { class: 'selo tr' }, feitas + '/' + tr.length + ' lições')),
+        el('div', { class: 'tit' }, pt.titulo),
+        el('div', { class: 'bar', 'aria-hidden': 'true' }, el('i', { style: 'width:' + Math.round(100 * feitas / tr.length) + '%' })),
+        ul,
+        el('div', { class: 'acoes' },
+          el('button', { type: 'button', class: 'pri', onclick: () => iniciarLicao(p, proxLicao(p)) }, ok ? 'Rever a trilha' : feitas ? 'Continuar' : 'Começar'),
+          pt.apostila ? el('a', { href: pt.apostila, target: '_blank', rel: 'noopener', style: 'align-self:center' }, 'Apostila em texto') : null)));
+    });
+  }
+
+  function iniciarLicao(p, i) {
+    const tr = trilha(p); const l = tr[i]; const id = p + '-' + i;
+    const corpo = abrirAtividade('Ponto ' + p + ' · Lição ' + (i + 1) + ' de ' + tr.length);
+    corpo.classList.add('licao');
+    corpo.append(el('h3', { style: 'font-size:1.15rem;margin:4px 0 12px' }, l.t, el('span', { class: 'nivel' }, l.nv)));
+    l.tx.forEach((par) => corpo.append(el('p', { html: fmt(par) })));
+    // passo a passo
+    const caixa = el('div', { class: 'passos' }, el('div', { class: 'mid', html: 'Passo a passo: ' + fmt(l.ps.t) }));
+    const ol = el('ol'); caixa.append(ol);
+    let k = 0;
+    const prox = el('button', { type: 'button', class: 'pri', style: 'margin-top:8px' }, 'Próximo passo (1 de ' + l.ps.i.length + ')');
+    const todos = el('button', { type: 'button', style: 'margin-top:8px' }, 'Mostrar todos');
+    const mostrarPasso = () => { ol.append(el('li', { html: fmt(l.ps.i[k]) })); k++; if (k >= l.ps.i.length) { prox.hidden = true; todos.hidden = true; abrirChecks(); } else prox.textContent = 'Próximo passo (' + (k + 1) + ' de ' + l.ps.i.length + ')'; };
+    prox.addEventListener('click', mostrarPasso);
+    todos.addEventListener('click', () => { while (k < l.ps.i.length) mostrarPasso(); });
+    caixa.append(el('div', { class: 'toolbar', style: 'margin:0' }, prox, todos));
+    corpo.append(caixa);
+    // checagem
+    const area = el('div'); corpo.append(area);
+    let respondidas = 0, abertos = false;
+    const concluir = el('button', { type: 'button', class: 'pri', disabled: true, style: 'margin-top:16px' }, 'Concluir lição');
+    function abrirChecks() {
+      if (abertos) return; abertos = true;
+      area.append(el('div', { class: 'mid', style: 'margin-top:8px' }, 'Confira se entendeu'));
+      l.ck.forEach((c, j) => {
+        const ops = embaralha([[c[1], true], [c[2], false], [c[3], false]]);
+        const box = el('div', { class: 'opcoes' }); const exp = el('div', { class: 'explic', hidden: true });
+        ops.forEach(([txt, certa]) => { const b = el('button', { type: 'button', html: fmt(txt) }); b.addEventListener('click', () => {
+          box.querySelectorAll('button').forEach((x, q) => { x.disabled = true; if (ops[q][1]) x.classList.add('certa'); });
+          if (!certa) b.classList.add('errada');
+          exp.append(el('span', { class: certa ? 'ok' : 'err' }, certa ? 'Certo. ' : 'Não foi dessa vez. '), el('span', { html: fmt(c[4]) })); exp.hidden = false;
+          const ckid = id + '-' + j; if (certa && !estado.lck[ckid]) { estado.lck[ckid] = 1; salvar(); ganhar(5, 'checagem certa'); }
+          respondidas++; if (respondidas === l.ck.length) { concluir.disabled = false; concluir.focus(); }
+        }); box.append(b); });
+        area.append(el('div', { class: 'check' }, el('div', { class: 'pergunta', style: 'font-size:1rem', html: (j + 1) + '. ' + fmt(c[0]) }), box, exp));
+      });
+      area.append(concluir);
+    }
+    concluir.addEventListener('click', () => {
+      const primeira = !licFeita(p, i);
+      estado.lic[id] = hoje(); dia().lic = (dia().lic || 0) + 1; salvar();
+      area.append(el('div', { class: 'leva', html: '<b>Para levar:</b> ' + fmt(l.lv) }));
+      const acoes = el('div', { class: 'toolbar', style: 'margin-top:12px' });
+      if (i + 1 < tr.length) acoes.append(el('button', { type: 'button', class: 'pri', onclick: () => iniciarLicao(p, i + 1) }, 'Próxima lição'));
+      else acoes.append(el('button', { type: 'button', class: 'pri', onclick: () => { abrirAba('t-f1'); iniciarQuiz(p); } }, 'Ir para o quiz do ponto ' + p));
+      acoes.append(el('button', { type: 'button', onclick: fecharAtividade }, 'Voltar às trilhas'));
+      if (PT[p].apostila) acoes.append(el('a', { href: PT[p].apostila, target: '_blank', rel: 'noopener', style: 'align-self:center' }, 'Apostila em texto'));
+      area.append(acoes); concluir.disabled = true; concluir.hidden = true;
+      if (primeira) {
+        ganhar(20, 'lição concluída');
+        if (trilhaFeita(p)) setTimeout(() => { ganhar(60, 'trilha do ponto ' + p + ' concluída'); toast('Quiz do ponto ' + p + ' liberado'); }, 600);
+      }
+    });
+  }
+
+  // ---------- renderização das abas ----------
+  function renderF1() {
+    const g = document.getElementById('grade-f1'); g.textContent = '';
+    PONTOS.forEach((pt) => {
+      const p = pt.p, q = estado.quiz[p], cs = cardsDo(p);
+      const dom = cs.filter((c) => caixa(c) >= 4).length, venc = cs.filter(vencido).length;
+      const certos = Object.values(estado.dias).reduce((s, d) => s + (d.calc[p] || 0), 0);
+      g.append(el('div', { class: 'card pt' },
+        el('div', { class: 'cab' }, el('span', { class: 'num' }, 'Ponto ' + p + ' · ' + pt.crono), liberado(p) ? el('span', { class: 'selo' }, 'fase 2 liberada') : el('span', { class: 'selo tr' }, 'fase 1')),
+        el('div', { class: 'tit' }, pt.titulo),
+        el('div', { class: 'stats' }, el('span', {}, 'Quiz: ' + (q && q.tent ? Math.round(q.melhor * 100) + '%' : '—')), el('span', {}, 'Cartões dominados: ' + dom + '/' + cs.length), el('span', {}, 'Pendentes: ' + venc), el('span', {}, 'Cálculos certos: ' + certos)),
+        el('div', { class: 'bar', 'aria-hidden': 'true' }, el('i', { style: 'width:' + Math.round(100 * (0.5 * (q ? q.melhor : 0) + 0.5 * dom / cs.length)) + '%' })),
+        el('div', { class: 'acoes' },
+          el('a', { href: pt.resumo, target: '_blank', rel: 'noopener', style: 'align-self:center;margin-right:4px' }, 'Resumo'),
+          quizAberto(p) ? el('button', { type: 'button', class: 'pri', onclick: () => iniciarQuiz(p) }, 'Quiz')
+            : el('button', { type: 'button', class: 'pri', onclick: () => { abrirAba('t-f0'); iniciarLicao(p, proxLicao(p)); } }, 'Trilha antes do quiz (' + licoesFeitas(p) + '/' + trilha(p).length + ')'),
+          el('button', { type: 'button', onclick: () => iniciarCards([p]) }, 'Flashcards'),
+          el('button', { type: 'button', onclick: () => iniciarCalc(p) }, 'Cálculos')),
+        quizAberto(p) ? null : el('button', { type: 'button', style: 'align-self:flex-start;font-size:.8rem;padding:2px 8px', onclick: () => { estado.pulou[p] = true; salvar(); renderTudo(); } }, 'Já sei o básico: liberar o quiz')));
+    });
+  }
+
+  function renderF2() {
+    const g = document.getElementById('grade-f2'); g.textContent = '';
+    PONTOS.forEach((pt) => {
+      const p = pt.p, lib = liberado(p), es = estado.esq[p] || [], rs = estado.red.filter((r) => r.p === p);
+      const notas = rs.filter((r) => r.nota !== null).map((r) => r.nota);
+      g.append(el('div', { class: 'card pt' + (lib ? '' : ' trancado') },
+        el('div', { class: 'cab' }, el('span', { class: 'num' }, 'Ponto ' + p), lib ? el('span', { class: 'selo' }, 'liberado') : el('span', { class: 'selo tr' }, 'trancado')),
+        el('div', { class: 'tit' }, pt.titulo),
+        el('div', { class: 'stats' }, el('span', {}, 'Esqueletos: ' + es.length + (es.length ? ' (último: ' + es[es.length - 1].cobertos + '/10)' : '')), el('span', {}, 'Redações: ' + rs.length), el('span', {}, 'Melhor nota: ' + (notas.length ? Math.max(...notas).toLocaleString('pt-BR') : '—'))),
+        lib ? el('div', { class: 'acoes' },
+          el('button', { type: 'button', class: 'pri', onclick: () => iniciarEsqueleto(p) }, 'Esqueleto (10 min)'),
+          el('button', { type: 'button', onclick: () => iniciarRedacao(p, 'sprint') }, 'Sprint (60 min)'),
+          el('button', { type: 'button', onclick: () => iniciarRedacao(p, 'completa') }, 'Completa (4 h)'))
+          : el('div', { class: 'acoes' }, el('span', { class: 'note', style: 'margin:0' }, 'Acerte 80% do quiz para liberar.'), el('button', { type: 'button', onclick: () => { if (quizAberto(p)) { abrirAba('t-f1'); iniciarQuiz(p); } else { abrirAba('t-f0'); iniciarLicao(p, proxLicao(p)); } } }, quizAberto(p) ? 'Fazer o quiz' : 'Começar pela trilha'))));
+    });
+    const tb = document.getElementById('tab-red'); tb.textContent = '';
+    if (!estado.red.length) tb.append(el('tr', {}, el('td', { colspan: 6, class: 'note' }, 'Nenhuma ainda.')));
+    estado.red.slice().reverse().forEach((r) => tb.append(el('tr', {},
+      el('td', {}, fmtData(r.data)), el('td', {}, r.p), el('td', {}, r.modo === 'completa' ? 'completa' : 'sprint'), el('td', {}, r.min + ' min'), el('td', {}, r.cobertos.length + '/10'),
+      el('td', {}, r.nota === null ? el('button', { type: 'button', onclick: () => mostrarCorrecao(r) }, 'Gerar texto e registrar nota') : el('span', {}, r.nota.toLocaleString('pt-BR') + ' ', el('button', { type: 'button', onclick: () => mostrarCorrecao(r) }, 'Ver texto'))))));
+  }
+
+  function renderConq() {
+    const g = document.getElementById('lista-conq'); g.textContent = '';
+    CONQ.forEach(([id, nome, desc]) => { const tem = estado.conq[id]; g.append(el('div', { class: 'card conq' + (tem ? ' tem' : '') }, el('div', { class: 'ic', 'aria-hidden': 'true' }, tem ? '★' : '·'), el('div', {}, el('div', { class: 'nm' }, nome + (tem ? '' : ' (bloqueada)')), el('div', { class: 'ds' }, desc + (tem ? ' · ' + fmtData(tem) : ''))))); });
+    const revs = Object.values(estado.dias).reduce((s, d) => s + d.cards, 0);
+    const linhas = [
+      ['Pontos de experiência', mil(estado.xp)], ['Quizzes feitos', Object.values(estado.quiz).reduce((s, q) => s + q.tent, 0)], ['Pontos com a fase 2 liberada', PONTOS.filter((p) => liberado(p.p)).length + ' de 10'],
+      ['Revisões de flashcards', revs], ['Cartões nas caixas 4 e 5', Object.values(estado.cards).filter((c) => c.cx >= 4).length + ' de ' + todosCards().length],
+      ['Cálculos certos / tentados', estado.calc.certos + ' / ' + estado.calc.tent], ['Esqueletos de memória', Object.values(estado.esq).reduce((s, a) => s + a.length, 0)],
+      ['Redações (sprint / completa)', estado.red.filter((r) => r.modo !== 'completa').length + ' / ' + estado.red.filter((r) => r.modo === 'completa').length], ['Missões cumpridas', Object.values(estado.dias).filter((d) => d.missao).length],
+    ];
+    const tb = document.getElementById('tab-num'); tb.textContent = '';
+    linhas.forEach(([a, b]) => tb.append(el('tr', {}, el('th', { scope: 'row' }, a), el('td', {}, String(b)))));
+  }
+
+  function renderTudo() {
+    renderTopo(); renderMissao();
+    if (!document.getElementById('aba-f0').hidden) renderF0();
+    if (!document.getElementById('aba-f1').hidden) renderF1();
+    if (!document.getElementById('aba-f2').hidden) renderF2();
+    if (!document.getElementById('aba-conq').hidden) renderConq();
+  }
+
+  // ---------- sorteio ----------
+  document.getElementById('btn-sortear').addEventListener('click', () => {
+    const lib = PONTOS.filter((p) => liberado(p.p)).map((p) => p.p);
+    const pool = lib.length ? lib : PONTOS.map((p) => p.p);
+    const p = escolhe(pool);
+    document.getElementById('sorteio-msg').textContent = 'Sorteado: ponto ' + p + (lib.length ? ' (entre os ' + lib.length + ' liberados)' : ' (nenhum liberado ainda; sorteado entre os 10)') + '.';
+    const corpo = abrirAtividade('Ponto sorteado: ' + p + ' – ' + PT[p].titulo);
+    corpo.append(el('p', {}, 'Escolha o formato do treino:'), el('div', { class: 'toolbar' },
+      el('button', { type: 'button', class: 'pri', onclick: () => iniciarRedacao(p, 'completa') }, 'Redação completa (30 min + 4 h)'),
+      el('button', { type: 'button', onclick: () => iniciarRedacao(p, 'sprint') }, 'Sprint (60 min)'),
+      el('button', { type: 'button', onclick: () => iniciarEsqueleto(p) }, 'Esqueleto (10 min)')));
+  });
+
+  // ---------- botões da fase 1 ----------
+  document.getElementById('btn-vencidos').addEventListener('click', () => iniciarCards(null, true));
+  document.getElementById('btn-calc-aleat').addEventListener('click', () => iniciarCalc(null));
+
+  // ---------- sincronização ----------
+  const b64u = (bytes) => { let s = ''; bytes.forEach((b) => { s += String.fromCharCode(b); }); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+  const deb64u = (t) => { t = t.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return Uint8Array.from(atob(t), (c) => c.charCodeAt(0)); };
+  async function gerarCodigo() {
+    const bytes = new TextEncoder().encode(JSON.stringify(estado));
+    if (window.CompressionStream) {
+      const cs = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+      return 'z' + b64u(new Uint8Array(await new Response(cs).arrayBuffer()));
+    }
+    return 'j' + b64u(bytes);
+  }
+  async function lerCodigo(c) {
+    c = c.trim(); const m = c.match(/jogo=([zj][A-Za-z0-9_-]+)/); if (m) c = m[1];
+    if (!/^[zj][A-Za-z0-9_-]+$/.test(c)) throw new Error('formato');
+    let bytes = deb64u(c.slice(1));
+    if (c[0] === 'z') { const ds = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')); bytes = new Uint8Array(await new Response(ds).arrayBuffer()); }
+    const obj = JSON.parse(new TextDecoder().decode(bytes));
+    if (!obj || obj.v !== 1 || typeof obj.xp !== 'number') throw new Error('conteúdo');
+    return obj;
+  }
+  const smsg = (t, ok) => { const m = document.getElementById('sync-msg'); m.textContent = t; m.className = 'note ' + (ok ? 'ok' : 'err'); };
+  document.getElementById('btn-link').addEventListener('click', async () => {
+    const link = location.origin + location.pathname + '#jogo=' + await gerarCodigo();
+    const campo = document.getElementById('sync-campo'); campo.value = link; campo.select();
+    let ok = false; try { await navigator.clipboard.writeText(link); ok = true; } catch (e) {}
+    smsg(ok ? 'Link copiado. Abra-o no outro aparelho.' : 'Copie o link do campo acima.', true);
+  });
+  async function importar(c) {
+    try { estado = await lerCodigo(c); salvar(); renderTudo(); smsg('Progresso do jogo importado: ' + mil(estado.xp) + ' XP.', true); return true; }
+    catch (e) { smsg('O código não é válido. Copie o link inteiro no outro aparelho.', false); return false; }
+  }
+  document.getElementById('btn-importar').addEventListener('click', () => importar(document.getElementById('sync-campo').value));
+  document.getElementById('btn-zerar').addEventListener('click', () => {
+    const b = document.getElementById('btn-zerar');
+    if (b.dataset.conf !== '1') { b.dataset.conf = '1'; b.textContent = 'Clique de novo para apagar o progresso do jogo neste aparelho'; setTimeout(() => { b.dataset.conf = ''; b.textContent = 'Recomeçar o jogo neste aparelho'; }, 4000); return; }
+    estado = novoEstado(); salvar(); b.dataset.conf = ''; b.textContent = 'Recomeçar o jogo neste aparelho'; renderTudo(); smsg('Jogo recomeçado neste aparelho.', true);
+  });
+
+  // ---------- links seguem o dono da cópia ----------
+  const dono = /\.github\.io$/i.test(location.hostname) ? location.hostname.split('.')[0] : 'emanuelqueiroga';
+  if (dono.toLowerCase() !== 'emanuelqueiroga') PONTOS.forEach((p) => { p.resumo = p.resumo.replace('/emanuelqueiroga/', '/' + dono + '/'); p.pagina = p.pagina.replace('/emanuelqueiroga/', '/' + dono + '/'); if (p.apostila) p.apostila = p.apostila.replace('/emanuelqueiroga/', '/' + dono + '/'); });
+
+  // ---------- início ----------
+  (async () => {
+    const h = location.hash || '';
+    if (h.startsWith('#jogo=')) { await importar(h); history.replaceState(null, '', location.pathname + location.search); abrirAba('t-sync'); }
+    dia(); salvar();
+    verificarConquistas(); renderTudo(); renderF0(); verificarMissao();
+  })();
+})();
+</script>
+</body>
+</html>
